@@ -3,6 +3,16 @@ import { useState } from 'react'
 const udemyFont =
   "'Udemy Sans', 'SF Pro Text', -apple-system, BlinkMacSystemFont, Roboto, 'Segoe UI', Helvetica, Arial, sans-serif"
 
+const inputStyle = {
+  width: '100%',
+  padding: '6px 8px',
+  fontSize: '14px',
+  border: '1px solid #d1d7dc',
+  borderRadius: '2px',
+  outline: 'none',
+  boxSizing: 'border-box',
+}
+
 export default function CourseCard({
   title,
   instructor,
@@ -12,9 +22,26 @@ export default function CourseCard({
   rating,
   students,
   image = 'https://via.placeholder.com/300x200',
+  isAdmin = false,
   onDelete,
+  onUpdate,
 }) {
   const [hovered, setHovered] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editTitle, setEditTitle] = useState(title)
+  const [editPrice, setEditPrice] = useState(price)
+
+  const startEditing = () => {
+    setEditTitle(title)
+    setEditPrice(price)
+    setEditing(true)
+  }
+
+  const saveEditing = () => {
+    if (!editTitle.trim() || !editPrice.trim()) return
+    onUpdate?.({ title: editTitle.trim(), price: editPrice.trim() })
+    setEditing(false)
+  }
 
   return (
     <div
@@ -60,22 +87,31 @@ export default function CourseCard({
         >
           {level}
         </span>
-        <h3
-          style={{
-            margin: '0 0 4px',
-            fontSize: '15px',
-            lineHeight: '1.3',
-            fontWeight: 700,
-            color: '#1c1d1f',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            minHeight: '39px',
-          }}
-        >
-          {title}
-        </h3>
+        {editing ? (
+          <input
+            type="text"
+            value={editTitle}
+            onChange={(event) => setEditTitle(event.target.value)}
+            style={{ ...inputStyle, marginBottom: '4px' }}
+          />
+        ) : (
+          <h3
+            style={{
+              margin: '0 0 4px',
+              fontSize: '15px',
+              lineHeight: '1.3',
+              fontWeight: 700,
+              color: '#1c1d1f',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              minHeight: '39px',
+            }}
+          >
+            {title}
+          </h3>
+        )}
         <p
           style={{
             margin: '0 0 6px',
@@ -93,37 +129,102 @@ export default function CourseCard({
           <span style={{ color: '#b4690e', fontSize: '13px', letterSpacing: '1px' }}>★★★★★</span>
           <span style={{ fontSize: '12px', color: '#6a6f73' }}>({students})</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '17px', fontWeight: 700, color: '#1c1d1f' }}>{price}</span>
-            {oldPrice && (
-              <span
-                style={{
-                  fontSize: '13px',
-                  color: '#6a6f73',
-                  textDecoration: 'line-through',
-                }}
-              >
-                {oldPrice}
-              </span>
-            )}
-          </div>
-          {onDelete && (
-            <button
-              onClick={onDelete}
-              style={{
-                fontSize: '12px',
-                fontWeight: 700,
-                color: '#b42318',
-                background: '#fff',
-                border: '1px solid #b42318',
-                padding: '6px 10px',
-                borderRadius: '2px',
-                cursor: 'pointer',
-              }}
-            >
-              Eliminar
-            </button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+          {editing ? (
+            <input
+              type="text"
+              value={editPrice}
+              onChange={(event) => setEditPrice(event.target.value)}
+              style={{ ...inputStyle, maxWidth: '120px' }}
+            />
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '17px', fontWeight: 700, color: '#1c1d1f' }}>{price}</span>
+              {oldPrice && (
+                <span
+                  style={{
+                    fontSize: '13px',
+                    color: '#6a6f73',
+                    textDecoration: 'line-through',
+                  }}
+                >
+                  {oldPrice}
+                </span>
+              )}
+            </div>
+          )}
+          {isAdmin && (
+            <div style={{ display: 'flex', gap: '6px' }}>
+              {editing ? (
+                <>
+                  <button
+                    onClick={saveEditing}
+                    style={{
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      color: '#fff',
+                      background: '#a435f0',
+                      border: '1px solid #a435f0',
+                      padding: '6px 10px',
+                      borderRadius: '2px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Guardar
+                  </button>
+                  <button
+                    onClick={() => setEditing(false)}
+                    style={{
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      color: '#6a6f73',
+                      background: '#fff',
+                      border: '1px solid #6a6f73',
+                      padding: '6px 10px',
+                      borderRadius: '2px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={startEditing}
+                    style={{
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      color: '#1c1d1f',
+                      background: '#fff',
+                      border: '1px solid #1c1d1f',
+                      padding: '6px 10px',
+                      borderRadius: '2px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Editar
+                  </button>
+                  {onDelete && (
+                    <button
+                      onClick={onDelete}
+                      style={{
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        color: '#b42318',
+                        background: '#fff',
+                        border: '1px solid #b42318',
+                        padding: '6px 10px',
+                        borderRadius: '2px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Eliminar
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>

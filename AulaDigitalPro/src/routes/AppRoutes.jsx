@@ -9,7 +9,10 @@ export const AppRoutes = ({ user, onLogin, onLogout }) => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginForm user={user} onLogin={onLogin} />} />
+        <Route
+          path="/"
+          element={user ? <Navigate to="/dashboard" replace /> : <LoginForm onLogin={onLogin} />}
+        />
         <Route
           path="/dashboard"
           element={

@@ -3,6 +3,11 @@ import { useState } from 'react'
 const udemyFont =
   "'Udemy Sans', 'SF Pro Text', -apple-system, BlinkMacSystemFont, Roboto, 'Segoe UI', Helvetica, Arial, sans-serif"
 
+const demoUsers = [
+  { id: 1, name: 'Ana Ocampo', email: 'admin@aula.com', password: 'admin123', role: 'admin' },
+  { id: 2, name: 'Carlos Mora', email: 'user@aula.com', password: 'user123', role: 'user' },
+]
+
 const inputStyle = {
   width: '100%',
   padding: '14px 12px',
@@ -21,12 +26,22 @@ const labelStyle = {
   marginBottom: '6px',
 }
 
-export default function LoginForm({ user, onLogin }) {
+export default function LoginForm({ onLogin }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [buttonHover, setButtonHover] = useState(false)
+
+  const loginUser = (found) =>
+    onLogin({ id: found.id, name: found.name, email: found.email, role: found.role })
+
+  const findUser = (users, emailValue, passwordValue) =>
+    users.find(
+      (u) =>
+        u.email.toLowerCase() === emailValue.trim().toLowerCase() &&
+        u.password === passwordValue
+    )
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -41,23 +56,33 @@ export default function LoginForm({ user, onLogin }) {
     try {
       const response = await fetch('/api/users')
       const users = await response.json()
-      const found = users.find(
-        (u) =>
-          u.email.toLowerCase() === email.trim().toLowerCase() &&
-          u.password === password
-      )
+      const found = findUser(users, email, password)
 
       if (!found) {
         setError('Credenciales incorrectas. Revisa tu correo y contraseña.')
         return
       }
 
-      onLogin({ id: found.id, name: found.name, email: found.email, role: found.role })
+      loginUser(found)
     } catch {
-      setError('No se pudo conectar con JSON Server. Ejecuta "npm run server" y vuelve a intentar.')
+      const found = findUser(demoUsers, email, password)
+
+      if (!found) {
+        setError(
+          'No se pudo conectar con JSON Server y las credenciales no coinciden con la cuenta demo. Usa los botones de abajo o ejecuta "npm run server".'
+        )
+        return
+      }
+
+      loginUser(found)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleDemo = (role) => {
+    const found = demoUsers.find((u) => u.role === role)
+    loginUser(found)
   }
 
   return (
@@ -179,38 +204,69 @@ export default function LoginForm({ user, onLogin }) {
         >
           {loading ? 'Verificando...' : 'Iniciar sesión'}
         </button>
-      </form>
 
-      <p style={{ fontSize: '14px', color: '#6a6f73', marginTop: '20px' }}>
-        ¿Nuevo en AulaDigitalPro?{' '}
-        <a href="#" style={{ color: '#5624d0', fontWeight: 700, textDecoration: 'none' }}>
-          Regístrate
-        </a>
-      </p>
-
-      {!user && (
         <div
           style={{
-            marginTop: '16px',
-            background: '#f7f9fa',
-            border: '1px dashed #d1d7dc',
-            borderRadius: '4px',
-            padding: '14px 18px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            margin: '20px 0',
             fontSize: '13px',
             color: '#6a6f73',
-            maxWidth: '460px',
-            width: '100%',
-            boxSizing: 'border-box',
           }}
         >
-          <strong style={{ color: '#1c1d1f' }}>Credenciales de prueba</strong>
-          <div style={{ marginTop: '6px', lineHeight: '1.6' }}>
-            Admin: admin@aula.com / admin123
-            <br />
-            Usuario: user@aula.com / user123
-          </div>
+          <span style={{ flex: 1, height: '1px', background: '#d1d7dc' }} />
+          o prueba una cuenta demo
+          <span style={{ flex: 1, height: '1px', background: '#d1d7dc' }} />
         </div>
-      )}
+
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button
+            type="button"
+            onClick={() => handleDemo('admin')}
+            style={{
+              flex: 1,
+              padding: '12px',
+              background: '#a435f0',
+              color: '#fff',
+              fontSize: '14px',
+              fontWeight: 700,
+              border: 'none',
+              borderRadius: '2px',
+              cursor: 'pointer',
+            }}
+          >
+            Entrar como Admin
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDemo('user')}
+            style={{
+              flex: 1,
+              padding: '12px',
+              background: '#fff',
+              color: '#1c1d1f',
+              fontSize: '14px',
+              fontWeight: 700,
+              border: '1px solid #1c1d1f',
+              borderRadius: '2px',
+              cursor: 'pointer',
+            }}
+          >
+            Entrar como Usuario
+          </button>
+        </div>
+        <p
+          style={{
+            fontSize: '12px',
+            color: '#6a6f73',
+            margin: '12px 0 0',
+            textAlign: 'center',
+          }}
+        >
+          Admin: admin@aula.com / admin123 · Usuario: user@aula.com / user123
+        </p>
+      </form>
     </div>
   )
 }
