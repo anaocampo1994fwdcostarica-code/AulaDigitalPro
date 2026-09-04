@@ -7,7 +7,7 @@ const inputStyle = {
   width: '100%',
   padding: '6px 8px',
   fontSize: '14px',
-  border: '1px solid #d1d7dc',
+  border: '1px solid #E2E8F0',
   borderRadius: '2px',
   outline: 'none',
   boxSizing: 'border-box',
@@ -48,15 +48,15 @@ export default function CourseCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: '#fff',
-        borderRadius: '12px',
+        background: '#FFFFFF',
+        borderRadius: '16px',
         overflow: 'hidden',
         boxShadow: hovered
           ? '0 6px 16px rgba(0, 0, 0, 0.12)'
           : '0 1px 2px rgba(0, 0, 0, 0.04)',
-        transform: hovered ? 'translateY(-3px)' : 'none',
+        transform: hovered ? 'translateY(-4px)' : 'none',
         transition: 'box-shadow 0.2s ease, transform 0.2s ease',
-        border: '1px solid #e8e8e8',
+        border: '1px solid #E2E8F0',
         fontFamily: udemyFont,
         display: 'flex',
         flexDirection: 'column',
@@ -76,8 +76,8 @@ export default function CourseCard({
         <span
           style={{
             display: 'inline-block',
-            background: '#eceb98',
-            color: '#3d3c0a',
+            background: '#D1FAE5',
+            color: '#047857',
             fontSize: '11px',
             fontWeight: 700,
             padding: '2px 8px',
@@ -101,7 +101,7 @@ export default function CourseCard({
               fontSize: '15px',
               lineHeight: '1.3',
               fontWeight: 700,
-              color: '#1c1d1f',
+              color: '#1E293B',
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
@@ -116,7 +116,7 @@ export default function CourseCard({
           style={{
             margin: '0 0 6px',
             fontSize: '12px',
-            color: '#6a6f73',
+            color: '#475569',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -127,7 +127,7 @@ export default function CourseCard({
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
           <span style={{ fontSize: '14px', fontWeight: 700, color: '#b4690e' }}>{rating}</span>
           <span style={{ color: '#b4690e', fontSize: '13px', letterSpacing: '1px' }}>★★★★★</span>
-          <span style={{ fontSize: '12px', color: '#6a6f73' }}>({students})</span>
+          <span style={{ fontSize: '12px', color: '#475569' }}>({students})</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
           {editing ? (
@@ -139,12 +139,12 @@ export default function CourseCard({
             />
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '17px', fontWeight: 700, color: '#1c1d1f' }}>{price}</span>
+              <span style={{ fontSize: '17px', fontWeight: 700, color: '#1E293B' }}>{price}</span>
               {oldPrice && (
                 <span
                   style={{
                     fontSize: '13px',
-                    color: '#6a6f73',
+                    color: '#475569',
                     textDecoration: 'line-through',
                   }}
                 >
@@ -163,10 +163,10 @@ export default function CourseCard({
                       fontSize: '12px',
                       fontWeight: 700,
                       color: '#fff',
-                      background: '#a435f0',
-                      border: '1px solid #a435f0',
+                      background: '#9333EA',
+                      border: '1px solid #9333EA',
                       padding: '6px 10px',
-                      borderRadius: '2px',
+                      borderRadius: '10px',
                       cursor: 'pointer',
                     }}
                   >
@@ -177,11 +177,11 @@ export default function CourseCard({
                     style={{
                       fontSize: '12px',
                       fontWeight: 700,
-                      color: '#6a6f73',
+                      color: '#475569',
                       background: '#fff',
-                      border: '1px solid #6a6f73',
+                      border: '1px solid #CBD5E1',
                       padding: '6px 10px',
-                      borderRadius: '2px',
+                      borderRadius: '10px',
                       cursor: 'pointer',
                     }}
                   >
@@ -195,11 +195,11 @@ export default function CourseCard({
                     style={{
                       fontSize: '12px',
                       fontWeight: 700,
-                      color: '#1c1d1f',
+                      color: '#1E293B',
                       background: '#fff',
-                      border: '1px solid #1c1d1f',
+                      border: '1px solid #CBD5E1',
                       padding: '6px 10px',
-                      borderRadius: '2px',
+                      borderRadius: '10px',
                       cursor: 'pointer',
                     }}
                   >

@@ -18,7 +18,7 @@ export default function AdminRoute({ children, user }) {
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
-          background: '#f7f9fa',
+          background: '#F8FAFC',
           fontFamily: udemyFont,
           padding: '24px',
         }}
@@ -26,7 +26,7 @@ export default function AdminRoute({ children, user }) {
         <div
           style={{
             background: '#fff',
-            border: '1px solid #d1d7dc',
+            border: '1px solid #E2E8F0',
             borderRadius: '12px',
             padding: '40px',
             maxWidth: '460px',
@@ -49,17 +49,17 @@ export default function AdminRoute({ children, user }) {
           >
             !
           </span>
-          <h1 style={{ fontSize: '26px', fontWeight: 700, color: '#1c1d1f', margin: '0 0 8px' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 700, color: '#1E293B', margin: '0 0 8px' }}>
             Acceso denegado
           </h1>
-          <p style={{ fontSize: '15px', color: '#6a6f73', margin: '0 0 24px' }}>
+          <p style={{ fontSize: '15px', color: '#475569', margin: '0 0 24px' }}>
             Solo los administradores pueden ingresar a esta página. Tu rol actual es "{user.role}".
           </p>
           <Link
             to="/dashboard"
             style={{
               display: 'inline-block',
-              background: '#a435f0',
+              background: '#9333EA',
               color: '#fff',
               padding: '12px 24px',
               borderRadius: '2px',

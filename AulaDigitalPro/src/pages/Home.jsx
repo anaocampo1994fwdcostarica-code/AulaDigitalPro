@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import './Home.css'
 
 const FONT = "'Udemy Sans', 'SF Pro Text', -apple-system, BlinkMacSystemFont, Roboto, 'Segoe UI', Helvetica, Arial, sans-serif"
-const PRIMARY = '#a435f0'
-const PRIMARY_DARK = '#5624d0'
-const TEXT = '#1c1d1f'
-const TEXT_MUTED = '#6a6f73'
-const BORDER = '#e8e8e8'
+const PRIMARY = '#9333EA'
+const PRIMARY_DARK = '#9333EA'
+const TEXT = '#1E293B'
+const TEXT_MUTED = '#475569'
+const BORDER = '#E2E8F0'
 const API_URL = '/api/courses'
 
 const sectionTitleStyle = {
@@ -19,15 +20,16 @@ const sectionTitleStyle = {
 
 const buttonStyle = {
   display: 'inline-block',
-  background: PRIMARY,
+  background: 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)',
   color: '#fff',
   fontSize: '16px',
   fontWeight: 700,
   padding: '14px 28px',
-  borderRadius: '6px',
+  borderRadius: '12px',
   textDecoration: 'none',
   cursor: 'pointer',
-  transition: 'background 0.2s ease',
+  boxShadow: '0 12px 24px rgba(139, 92, 246, 0.2)',
+  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
 }
 
 export default function Home() {
@@ -49,32 +51,32 @@ export default function Home() {
   const featured = courses.slice(0, 6)
 
   return (
-    <div style={{ fontFamily: FONT, minHeight: '100vh', background: '#fff' }}>
+    <div style={{ fontFamily: FONT, minHeight: '100vh', background: '#F8FAFC' }}>
       {/* Hero */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, #1c1d1f 0%, #281a3a 60%, #5624d0 100%)',
-          color: '#fff',
-          textAlign: 'center',
-          padding: '96px 24px',
-        }}
-      >
-        <h1 style={{ fontSize: '52px', fontWeight: 800, margin: '0 0 16px' }}>AulaDigital Pro</h1>
-        <p
-          style={{
-            fontSize: '20px',
-            color: '#e0d7f0',
-            maxWidth: '640px',
-            margin: '0 auto 36px',
-            lineHeight: 1.6,
-          }}
-        >
-          Aprende tecnología de la mano de expertos y conviértete en el profesional que el mundo
-          digital necesita. Cursos prácticos, proyectos reales y una comunidad que te impulsa.
-        </p>
-        <Link to="/login" style={buttonStyle}>
-          Acceder a la plataforma
-        </Link>
+      <section className="home-hero">
+        <div className="home-hero__content">
+          <span className="home-hero__eyebrow">Aprendizaje que se convierte en acción</span>
+          <h1>Aprende hoy las habilidades que abrirán tu próximo camino.</h1>
+          <p>
+            Cursos prácticos, proyectos reales y acompañamiento experto para avanzar con confianza
+            en el mundo digital.
+          </p>
+          <Link to="/login" style={buttonStyle}>
+            Explorar cursos
+          </Link>
+          <small>Empieza a tu ritmo. Cancela cuando quieras.</small>
+        </div>
+        <div className="home-hero__visual" aria-label="Estudiante aprendiendo en AulaDigitalPro">
+          <div className="home-hero__shape home-hero__shape--mint" />
+          <div className="home-hero__shape home-hero__shape--peach" />
+          <div className="home-hero__shape home-hero__shape--yellow" />
+          <img
+            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85"
+            alt="Estudiante trabajando en un curso digital"
+          />
+          <div className="home-hero__note">+ habilidades reales</div>
+          <div className="home-hero__badge">Aprende a tu ritmo</div>
+        </div>
       </section>
 
       {/* Sobre nosotros */}
@@ -90,7 +92,7 @@ export default function Home() {
         >
           <div
             style={{
-              background: '#f7f9fa',
+              background: '#F8FAFC',
               border: `1px solid ${BORDER}`,
               borderRadius: '12px',
               padding: '24px',
@@ -108,7 +110,7 @@ export default function Home() {
           </div>
           <div
             style={{
-              background: '#f7f9fa',
+              background: '#F8FAFC',
               border: `1px solid ${BORDER}`,
               borderRadius: '12px',
               padding: '24px',
@@ -126,7 +128,7 @@ export default function Home() {
           </div>
           <div
             style={{
-              background: '#f7f9fa',
+              background: '#F8FAFC',
               border: `1px solid ${BORDER}`,
               borderRadius: '12px',
               padding: '24px',
@@ -221,7 +223,7 @@ export default function Home() {
                       fontSize: '12px',
                       fontWeight: 700,
                       color: PRIMARY_DARK,
-                      background: '#f3e8fd',
+                      background: '#D1FAE5',
                       padding: '3px 8px',
                       borderRadius: '4px',
                     }}
@@ -247,7 +249,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer style={{ background: '#1c1d1f', color: '#e0d7f0', textAlign: 'center', padding: '24px' }}>
+      <footer style={{ background: '#3B82F6', color: '#fff', textAlign: 'center', padding: '24px' }}>
         <p style={{ fontSize: '14px', margin: 0 }}>© 2026 AulaDigital Pro</p>
       </footer>
     </div>

@@ -65,11 +65,11 @@ const fallbackCourses = [
   { id: 27, title: 'Gestión del tiempo con técnicas ágiles', instructor: 'Patricia Solano', category: 'Productividad', level: 'Intermedio', price: '₡8.900', oldPrice: '₡38.900', rating: 4.5, students: '11,640', image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=400&q=60' },
 ]
 
-const textPrimary = '#1c1d1f'
-const textSecondary = '#6a6f73'
-const purple = '#a435f0'
-const purpleDark = '#5624d0'
-const borderColor = '#d1d7dc'
+const textPrimary = '#1E293B'
+const textSecondary = '#475569'
+const purple = '#9333EA'
+const purpleDark = '#7E22CE'
+const borderColor = '#E2E8F0'
 
 const inputStyle = {
   width: '100%',
@@ -274,7 +274,7 @@ const handleDelete = async (id) => {
                   color: isActive ? purpleDark : textPrimary,
                   background: 'transparent',
                   border: 'none',
-                  borderBottom: isActive ? '3px solid #a435f0' : '3px solid transparent',
+                  borderBottom: isActive ? '3px solid #9333EA' : '3px solid transparent',
                   padding: '6px 2px',
                   cursor: 'pointer',
                 }}
@@ -324,7 +324,7 @@ const handleDelete = async (id) => {
             style={{
               border: `1px solid ${borderColor}`,
               borderRadius: '8px',
-              background: '#f7f9fa',
+              background: '#F8FAFC',
               padding: '16px',
               marginBottom: '24px',
             }}
@@ -528,7 +528,7 @@ const handleDelete = async (id) => {
             ) : filteredCourses.length === 0 ? (
               <div
                 style={{
-                  background: '#f7f9fa',
+                  background: '#F8FAFC',
                   border: `1px dashed ${borderColor}`,
                   borderRadius: '8px',
                   padding: '40px',

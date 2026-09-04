@@ -4,10 +4,10 @@ import Navbar from '../components/Navbar'
 const udemyFont =
   "'Udemy Sans', 'SF Pro Text', -apple-system, BlinkMacSystemFont, Roboto, 'Segoe UI', Helvetica, Arial, sans-serif"
 
-const purple = '#a435f0'
-const textPrimary = '#1c1d1f'
-const textSecondary = '#6a6f73'
-const borderColor = '#d1d7dc'
+const purple = '#9333EA'
+const textPrimary = '#1E293B'
+const textSecondary = '#475569'
+const borderColor = '#E2E8F0'
 
 const filterCategories = [
   'Desarrollo de software',
@@ -133,7 +133,7 @@ export default function AdminDashboard({ user, onLogout }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f7f9fa', fontFamily: udemyFont }}>
+    <div style={{ minHeight: '100vh', background: '#F8FAFC', fontFamily: udemyFont }}>
       <Navbar user={user} onLogout={onLogout} />
 
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '32px 24px' }}>
@@ -300,7 +300,7 @@ export default function AdminDashboard({ user, onLogout }) {
           ) : (
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
               <thead>
-                <tr style={{ background: '#f7f9fa', color: textSecondary }}>
+                <tr style={{ background: '#F8FAFC', color: textSecondary }}>
                   <th style={cellStyle}>#</th>
                   <th style={cellStyle}>Título</th>
                   <th style={cellStyle}>Categoría</th>

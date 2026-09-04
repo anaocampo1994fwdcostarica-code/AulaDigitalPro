@@ -12,7 +12,7 @@ const inputStyle = {
   width: '100%',
   padding: '14px 12px',
   fontSize: '15px',
-  border: '1px solid #1c1d1f',
+  border: '1px solid #CBD5E1',
   borderRadius: '2px',
   outline: 'none',
   boxSizing: 'border-box',
@@ -22,7 +22,7 @@ const labelStyle = {
   display: 'block',
   fontSize: '13px',
   fontWeight: 700,
-  color: '#1c1d1f',
+  color: '#1E293B',
   marginBottom: '6px',
 }
 
@@ -93,7 +93,7 @@ export default function LoginForm({ onLogin }) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#fff',
+        background: '#F8FAFC',
         fontFamily: udemyFont,
         padding: '24px',
       }}
@@ -103,8 +103,8 @@ export default function LoginForm({ onLogin }) {
           style={{
             width: '34px',
             height: '34px',
-            background: '#a435f0',
-            borderRadius: '4px',
+            background: '#3B82F6',
+            borderRadius: '10px',
             color: '#fff',
             display: 'flex',
             alignItems: 'center',
@@ -115,8 +115,9 @@ export default function LoginForm({ onLogin }) {
         >
           A
         </span>
-        <span style={{ fontSize: '22px', fontWeight: 700, color: '#1c1d1f' }}>
-          AulaDigitalPro
+        <span style={{ fontSize: '22px', fontWeight: 700 }}>
+          <span style={{ color: '#3B82F6' }}>AulaDigital</span>
+          <span style={{ color: '#10B981' }}>Pro</span>
         </span>
       </div>
 
@@ -125,17 +126,18 @@ export default function LoginForm({ onLogin }) {
         style={{
           width: '100%',
           maxWidth: '460px',
-          border: '1px solid #d1d7dc',
-          borderRadius: '4px',
+          border: '1px solid #E2E8F0',
+          borderRadius: '16px',
           padding: '32px',
           boxSizing: 'border-box',
           background: '#fff',
+          boxShadow: '0 20px 45px rgba(15, 23, 42, 0.08)',
         }}
       >
-        <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#1c1d1f', margin: '0 0 4px' }}>
+        <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#1E293B', margin: '0 0 4px' }}>
           Iniciar sesión
         </h1>
-        <p style={{ fontSize: '14px', color: '#6a6f73', margin: '0 0 24px' }}>
+        <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 24px' }}>
           Aprende nuevas habilidades y dale un impulso a tu carrera.
         </p>
 
@@ -192,12 +194,12 @@ export default function LoginForm({ onLogin }) {
           style={{
             width: '100%',
             padding: '14px',
-            background: buttonHover ? '#8710d8' : '#a435f0',
+            background: buttonHover ? '#7C3AED' : '#8B5CF6',
             color: '#fff',
             fontSize: '16px',
             fontWeight: 700,
             border: 'none',
-            borderRadius: '2px',
+            borderRadius: '12px',
             cursor: 'pointer',
             transition: 'background 0.2s ease',
           }}
@@ -212,12 +214,12 @@ export default function LoginForm({ onLogin }) {
             gap: '12px',
             margin: '20px 0',
             fontSize: '13px',
-            color: '#6a6f73',
+            color: '#475569',
           }}
         >
-          <span style={{ flex: 1, height: '1px', background: '#d1d7dc' }} />
+          <span style={{ flex: 1, height: '1px', background: '#CBD5E1' }} />
           o prueba una cuenta demo
-          <span style={{ flex: 1, height: '1px', background: '#d1d7dc' }} />
+          <span style={{ flex: 1, height: '1px', background: '#CBD5E1' }} />
         </div>
 
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -227,12 +229,12 @@ export default function LoginForm({ onLogin }) {
             style={{
               flex: 1,
               padding: '12px',
-              background: '#a435f0',
+              background: '#8B5CF6',
               color: '#fff',
               fontSize: '14px',
               fontWeight: 700,
               border: 'none',
-              borderRadius: '2px',
+              borderRadius: '12px',
               cursor: 'pointer',
             }}
           >
@@ -244,12 +246,12 @@ export default function LoginForm({ onLogin }) {
             style={{
               flex: 1,
               padding: '12px',
-              background: '#fff',
-              color: '#1c1d1f',
+              background: '#FFFFFF',
+              color: '#1E293B',
               fontSize: '14px',
               fontWeight: 700,
-              border: '1px solid #1c1d1f',
-              borderRadius: '2px',
+              border: '1px solid #3B82F6',
+              borderRadius: '12px',
               cursor: 'pointer',
             }}
           >
@@ -259,7 +261,7 @@ export default function LoginForm({ onLogin }) {
         <p
           style={{
             fontSize: '12px',
-            color: '#6a6f73',
+            color: '#475569',
             margin: '12px 0 0',
             textAlign: 'center',
           }}
