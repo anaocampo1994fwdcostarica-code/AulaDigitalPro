@@ -1,6 +1,8 @@
+import { Navigate } from 'react-router-dom'
+
 export default function ProtectedRoute({ children, user }) {
   if (!user) {
-    return <p>Cargando...</p>
+    return <Navigate to="/" replace />
   }
   return children
 }

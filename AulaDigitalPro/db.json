@@ -1,0 +1,87 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Ana Ocampo",
+      "email": "admin@aula.com",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": "2",
+      "name": "Carlos Mora",
+      "email": "user@aula.com",
+      "password": "user123",
+      "role": "user"
+    }
+  ],
+  "courses": [
+    {
+      "id": "1",
+      "title": "React desde cero: Guía completa de hooks y componentes",
+      "instructor": "Juan Pérez",
+      "level": "Principiante",
+      "price": "$9.99",
+      "oldPrice": "$49.99",
+      "rating": 4.7,
+      "students": "12,540",
+      "image": "https://via.placeholder.com/300x200"
+    },
+    {
+      "id": "2",
+      "title": "Node.js avanzado: APIs, bases de datos y microservicios",
+      "instructor": "María García",
+      "level": "Intermedio",
+      "price": "$12.99",
+      "oldPrice": "$59.99",
+      "rating": 4.8,
+      "students": "8,210",
+      "image": "https://via.placeholder.com/300x200"
+    },
+    {
+      "id": "3",
+      "title": "Sistemas distribuidos: Arquitecturas escalables en la nube",
+      "instructor": "Carlos López",
+      "level": "Avanzado",
+      "price": "$15.99",
+      "oldPrice": "$69.99",
+      "rating": 4.6,
+      "students": "3,870",
+      "image": "https://via.placeholder.com/300x200"
+    },
+    {
+      "id": "4",
+      "title": "JavaScript esencial: Domina el lenguaje desde lo básico",
+      "instructor": "Ana Torres",
+      "level": "Principiante",
+      "price": "$8.99",
+      "oldPrice": "$39.99",
+      "rating": 4.5,
+      "students": "21,340",
+      "image": "https://via.placeholder.com/300x200"
+    },
+    {
+      "id": "5",
+      "title": "TypeScript práctico: Tipado seguro para producción",
+      "instructor": "Luis Ramírez",
+      "level": "Intermedio",
+      "price": "$11.99",
+      "oldPrice": "$54.99",
+      "rating": 4.9,
+      "students": "6,980",
+      "image": "https://via.placeholder.com/300x200"
+    },
+    {
+      "id": "6",
+      "title": "Cloud con AWS: De polizón a profesional en la nube",
+      "instructor": "Sofía Ruiz",
+      "level": "Avanzado",
+      "price": "$14.99",
+      "oldPrice": "$74.99",
+      "rating": 4.4,
+      "students": "5,120",
+      "image": "https://via.placeholder.com/300x200"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
