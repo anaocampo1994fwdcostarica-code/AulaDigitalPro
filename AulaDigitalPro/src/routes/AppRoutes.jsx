@@ -1,22 +1,17 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import LoginForm from '../components/LoginForm'
-import Dashboard from '../pages/Dashboard'
-import ProtectedRoute from './ProtectedRoute'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LoginForm from '../components/LoginForm'; // Tu formulario ya creado
+import Dashboard from '../pages/Dashboard';       // Necesitarás crear este archivo
 
-export default function AppRoutes() {
+export const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Ruta raíz: Muestra el Login */}
         <Route path="/" element={<LoginForm />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute user={null}>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        
+        {/* Ruta Dashboard: Muestra el Dashboard */}
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
-  )
-}
+  );
+};
