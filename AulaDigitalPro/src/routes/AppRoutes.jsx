@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Home from '../pages/Home'
 import LoginForm from '../components/LoginForm'
 import Dashboard from '../pages/Dashboard'
 import AdminDashboard from '../pages/AdminDashboard'
@@ -9,8 +10,9 @@ export const AppRoutes = ({ user, onLogin, onLogout }) => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route
-          path="/"
+          path="/login"
           element={user ? <Navigate to="/dashboard" replace /> : <LoginForm onLogin={onLogin} />}
         />
         <Route

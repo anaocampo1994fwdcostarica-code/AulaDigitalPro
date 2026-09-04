@@ -7,7 +7,7 @@ const PRIMARY_DARK = '#5624d0'
 const TEXT = '#1c1d1f'
 const TEXT_MUTED = '#6a6f73'
 const BORDER = '#e8e8e8'
-const API_URL = 'http://localhost:3001/courses'
+const API_URL = '/api/courses'
 
 const sectionTitleStyle = {
   fontSize: '30px',
@@ -205,11 +205,35 @@ export default function Home() {
                     flex: 1,
                   }}
                 >
-                  {course.description}
+                  {course.instructor}
                 </p>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: PRIMARY_DARK }}>
-                  {course.duration}
-                </span>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '8px',
+                    marginBottom: '8px',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      color: PRIMARY_DARK,
+                      background: '#f3e8fd',
+                      padding: '3px 8px',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    {course.category} · {course.level}
+                  </span>
+                  {course.price !== 'Gratis' && (
+                    <span style={{ fontSize: '16px', fontWeight: 700, color: TEXT }}>
+                      {course.price}
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -224,7 +248,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer style={{ background: '#1c1d1f', color: '#e0d7f0', textAlign: 'center', padding: '24px' }}>
-        <p style={{ fontSize: '14px', margin: 0 }}>© 2024 AulaDigital Pro</p>
+        <p style={{ fontSize: '14px', margin: 0 }}>© 2026 AulaDigital Pro</p>
       </footer>
     </div>
   )
