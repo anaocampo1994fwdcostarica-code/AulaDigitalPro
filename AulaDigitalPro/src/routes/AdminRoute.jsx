@@ -1,7 +1,5 @@
 import { Navigate, Link } from 'react-router-dom'
-
-const udemyFont =
-  "'Udemy Sans', 'SF Pro Text', -apple-system, BlinkMacSystemFont, Roboto, 'Segoe UI', Helvetica, Arial, sans-serif"
+import { FONT, gradients } from '../theme'
 
 export default function AdminRoute({ children, user }) {
   if (!user) {
@@ -18,57 +16,86 @@ export default function AdminRoute({ children, user }) {
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
-          background: '#F8FAFC',
-          fontFamily: udemyFont,
+          background: gradients.app,
+          fontFamily: FONT,
           padding: '24px',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
         <div
           style={{
-            background: '#fff',
-            border: '1px solid #E2E8F0',
-            borderRadius: '12px',
-            padding: '40px',
-            maxWidth: '460px',
+            width: '520px',
+            height: '520px',
+            borderRadius: '50%',
+            position: 'absolute',
+            top: '-120px',
+            left: '-110px',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }}
+        />
+        <div
+          style={{
+            background: 'rgba(12,14,38,0.55)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '24px',
+            padding: '42px 40px',
+            maxWidth: '470px',
             width: '100%',
+            textAlign: 'center',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            boxShadow: '0 32px 80px rgba(20,5,45,0.5)',
+            position: 'relative',
           }}
         >
           <span
             style={{
-              display: 'inline-block',
-              width: '56px',
-              height: '56px',
+              display: 'inline-flex',
+              width: '64px',
+              height: '64px',
               borderRadius: '50%',
-              background: '#fbeaea',
-              color: '#b42318',
-              fontSize: '30px',
-              fontWeight: 800,
-              lineHeight: '56px',
-              marginBottom: '16px',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: gradients.gold,
+              border: '2px solid rgba(255,255,255,0.4)',
+              color: '#4A2F00',
+              fontSize: '32px',
+              fontWeight: 900,
+              lineHeight: 1,
+              marginBottom: '18px',
+              boxShadow: '0 10px 26px rgba(212,175,55,0.4)',
             }}
           >
             !
           </span>
-          <h1 style={{ fontSize: '26px', fontWeight: 700, color: '#1E293B', margin: '0 0 8px' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 900, color: '#FFFFFF', margin: '0 0 10px', letterSpacing: '-0.02em' }}>
             Acceso denegado
           </h1>
-          <p style={{ fontSize: '15px', color: '#475569', margin: '0 0 24px' }}>
+          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.75)', margin: '0 0 26px', lineHeight: 1.6 }}>
             Solo los administradores pueden ingresar a esta página. Tu rol actual es "{user.role}".
           </p>
           <Link
             to="/dashboard"
             style={{
-              display: 'inline-block',
-              background: '#9333EA',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              background: gradients.btn,
               color: '#fff',
-              padding: '12px 24px',
-              borderRadius: '2px',
+              padding: '13px 26px',
+              borderRadius: 999,
+              border: '1px solid rgba(255,255,255,0.3)',
               fontSize: '15px',
-              fontWeight: 700,
+              fontWeight: 800,
               textDecoration: 'none',
+              boxShadow: '0 12px 26px rgba(20,5,45,0.4)',
+              cursor: 'pointer',
+              fontFamily: FONT,
             }}
           >
-            Ir al Dashboard
+            ← Ir al Dashboard
           </Link>
         </div>
       </div>

@@ -1,16 +1,28 @@
 import { useState } from 'react'
+import { gradients } from '../theme'
 
-const udemyFont =
-  "'Udemy Sans', 'SF Pro Text', -apple-system, BlinkMacSystemFont, Roboto, 'Segoe UI', Helvetica, Arial, sans-serif"
+const FONT = "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
 
 const inputStyle = {
   width: '100%',
   padding: '6px 8px',
   fontSize: '14px',
-  border: '1px solid #E2E8F0',
-  borderRadius: '2px',
+  border: '1px solid rgba(255,255,255,0.25)',
+  borderRadius: '8px',
   outline: 'none',
   boxSizing: 'border-box',
+  background: 'rgba(255,255,255,0.08)',
+  color: '#FFFFFF',
+}
+
+function getLevelStyle(level) {
+  if (level === 'Principiante') {
+    return { background: 'rgba(0, 168, 150, 0.1)', color: '#00A896' }
+  }
+  if (level === 'Avanzado') {
+    return { background: 'rgba(212, 175, 55, 0.1)', color: '#B38B2D' }
+  }
+  return { background: 'rgba(37, 99, 235, 0.18)', color: '#7CA8FA' }
 }
 
 export default function CourseCard({
@@ -30,6 +42,7 @@ export default function CourseCard({
   const [editing, setEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(title)
   const [editPrice, setEditPrice] = useState(price)
+  const [deleteHover, setDeleteHover] = useState(false)
 
   const startEditing = () => {
     setEditTitle(title)
@@ -43,182 +56,170 @@ export default function CourseCard({
     setEditing(false)
   }
 
+  const levelStyle = getLevelStyle(level)
+
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: '#FFFFFF',
-        borderRadius: '16px',
+        background: 'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 100%)',
+        borderRadius: '18px',
         overflow: 'hidden',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
         boxShadow: hovered
-          ? '0 6px 16px rgba(0, 0, 0, 0.12)'
-          : '0 1px 2px rgba(0, 0, 0, 0.04)',
+          ? '0 26px 44px -12px rgba(20, 5, 45, 0.55)'
+          : '0 10px 22px rgba(20, 5, 45, 0.3)',
         transform: hovered ? 'translateY(-4px)' : 'none',
-        transition: 'box-shadow 0.2s ease, transform 0.2s ease',
-        border: '1px solid #E2E8F0',
-        fontFamily: udemyFont,
+        transition: 'box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease',
+        border: hovered ? '1px solid rgba(245, 179, 1, 0.5)' : '1px solid rgba(255, 255, 255, 0.16)',
+        fontFamily: FONT,
         display: 'flex',
         flexDirection: 'column',
       }}
     >
-      <img
-        src={image}
-        alt={title}
-        style={{
-          width: '100%',
-          aspectRatio: '16/9',
-          objectFit: 'cover',
-          display: 'block',
-        }}
-      />
-      <div style={{ padding: '12px', flex: 1 }}>
-        <span
+      {/* Imagen */}
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <img
+          src={image}
+          alt={title}
           style={{
-            display: 'inline-block',
-            background: '#D1FAE5',
-            color: '#047857',
-            fontSize: '11px',
-            fontWeight: 700,
-            padding: '2px 8px',
-            borderRadius: '4px',
-            marginBottom: '6px',
+            width: '100%',
+            aspectRatio: '16/9',
+            objectFit: 'cover',
+            display: 'block',
+            transition: 'transform 0.4s ease',
+            transform: hovered ? 'scale(1.04)' : 'scale(1)',
           }}
-        >
+        />
+        {/* Overlay sutil en hover */}
+        {hovered && (
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(180deg, transparent 50%, rgba(15, 76, 92, 0.1) 100%)',
+          }} />
+        )}
+      </div>
+
+      <div style={{ padding: '14px 16px', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        {/* Badge nivel */}
+        <span style={{
+          display: 'inline-block',
+          background: levelStyle.background,
+          color: levelStyle.color,
+          fontSize: '11px',
+          fontWeight: 700,
+          padding: '4px 10px',
+          borderRadius: '999px',
+          alignSelf: 'flex-start',
+          letterSpacing: '0.01em',
+        }}>
           {level}
         </span>
+
+        {/* Titulo */}
         {editing ? (
-          <input
-            type="text"
-            value={editTitle}
-            onChange={(event) => setEditTitle(event.target.value)}
-            style={{ ...inputStyle, marginBottom: '4px' }}
-          />
+          <input type="text" value={editTitle} onChange={(event) => setEditTitle(event.target.value)}
+            style={{ ...inputStyle, marginBottom: '2px' }} />
         ) : (
-          <h3
-            style={{
-              margin: '0 0 4px',
-              fontSize: '15px',
-              lineHeight: '1.3',
-              fontWeight: 700,
-              color: '#1E293B',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              minHeight: '39px',
-            }}
-          >
+          <h3 style={{
+            margin: '2px 0 0',
+            fontSize: '15px',
+            lineHeight: '1.4',
+            fontWeight: 800,
+            color: '#FFFFFF',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            minHeight: '40px',
+            letterSpacing: '-0.01em',
+          }}>
             {title}
           </h3>
         )}
-        <p
-          style={{
-            margin: '0 0 6px',
-            fontSize: '12px',
-            color: '#475569',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
+
+        {/* Instructor */}
+        <p style={{
+          margin: 0,
+          fontSize: '13px',
+          color: 'rgba(255,255,255,0.65)',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          fontWeight: 500,
+        }}>
           {instructor}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-          <span style={{ fontSize: '14px', fontWeight: 700, color: '#b4690e' }}>{rating}</span>
-          <span style={{ color: '#b4690e', fontSize: '13px', letterSpacing: '1px' }}>★★★★★</span>
-          <span style={{ fontSize: '12px', color: '#475569' }}>({students})</span>
+
+        {/* Rating */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF' }}>{rating}</span>
+          <span style={{ color: '#D4AF37', fontSize: '13px', letterSpacing: '1px' }}>
+            {Array.from({ length: 5 }, (_, i) => (
+              i < Math.round(rating) ? '★' : '☆'
+            )).join('')}
+          </span>
+          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.55)' }}>({students})</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+
+        {/* Precio + botones admin */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', marginTop: 'auto', paddingTop: '6px' }}>
           {editing ? (
-            <input
-              type="text"
-              value={editPrice}
-              onChange={(event) => setEditPrice(event.target.value)}
-              style={{ ...inputStyle, maxWidth: '120px' }}
-            />
+            <input type="text" value={editPrice} onChange={(event) => setEditPrice(event.target.value)}
+              style={{ ...inputStyle, maxWidth: '110px' }} />
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '17px', fontWeight: 700, color: '#1E293B' }}>{price}</span>
+              <span style={{ fontSize: '20px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>{price}</span>
               {oldPrice && (
-                <span
-                  style={{
-                    fontSize: '13px',
-                    color: '#475569',
-                    textDecoration: 'line-through',
-                  }}
-                >
-                  {oldPrice}
-                </span>
+                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', textDecoration: 'line-through' }}>{oldPrice}</span>
               )}
             </div>
           )}
+
           {isAdmin && (
-            <div style={{ display: 'flex', gap: '6px' }}>
+            <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
               {editing ? (
                 <>
-                  <button
-                    onClick={saveEditing}
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      color: '#fff',
-                      background: '#9333EA',
-                      border: '1px solid #9333EA',
-                      padding: '6px 10px',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                    }}
-                  >
+                  <button onClick={saveEditing} style={{
+                    fontSize: '12px', fontWeight: 700, color: '#fff',
+                    background: gradients.btn,
+                    border: '1px solid rgba(255,255,255,0.3)', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(20, 5, 45, 0.3)',
+                  }}>
                     Guardar
                   </button>
-                  <button
-                    onClick={() => setEditing(false)}
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      color: '#475569',
-                      background: '#fff',
-                      border: '1px solid #CBD5E1',
-                      padding: '6px 10px',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                    }}
-                  >
+                  <button onClick={() => setEditing(false)} style={{
+                    fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.85)',
+                    background: 'transparent', border: '1px solid rgba(255,255,255,0.35)',
+                    padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
+                  }}>
                     Cancelar
                   </button>
                 </>
               ) : (
                 <>
-                  <button
-                    onClick={startEditing}
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      color: '#1E293B',
-                      background: '#fff',
-                      border: '1px solid #CBD5E1',
-                      padding: '6px 10px',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                    }}
-                  >
+                  <button onClick={startEditing} style={{
+                    fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.85)',
+                    background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.35)',
+                    padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}>
                     Editar
                   </button>
                   {onDelete && (
-                    <button
-                      onClick={onDelete}
+                    <button onClick={onDelete}
+                      onMouseEnter={() => setDeleteHover(true)}
+                      onMouseLeave={() => setDeleteHover(false)}
                       style={{
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        color: '#b42318',
-                        background: '#fff',
-                        border: '1px solid #b42318',
-                        padding: '6px 10px',
-                        borderRadius: '2px',
-                        cursor: 'pointer',
-                      }}
-                    >
+                        fontSize: '12px', fontWeight: 700,
+                        color: '#FCA5A5',
+                        background: deleteHover ? 'rgba(220,38,38,0.28)' : 'rgba(220,38,38,0.14)',
+                        border: '1px solid rgba(252,165,165,0.45)',
+                        padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                      }}>
                       Eliminar
                     </button>
                   )}

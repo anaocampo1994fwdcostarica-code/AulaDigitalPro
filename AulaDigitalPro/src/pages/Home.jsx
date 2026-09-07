@@ -1,256 +1,178 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Home.css'
+import BrandLogo from '../components/BrandLogo'
+import { FONT, gradients } from '../theme'
 
-const FONT = "'Udemy Sans', 'SF Pro Text', -apple-system, BlinkMacSystemFont, Roboto, 'Segoe UI', Helvetica, Arial, sans-serif"
-const PRIMARY = '#9333EA'
-const PRIMARY_DARK = '#9333EA'
-const TEXT = '#1E293B'
-const TEXT_MUTED = '#475569'
-const BORDER = '#E2E8F0'
 const API_URL = '/api/courses'
 
-const sectionTitleStyle = {
-  fontSize: '30px',
-  fontWeight: 700,
-  color: TEXT,
-  margin: '0 0 8px',
-  textAlign: 'center',
+const fallbackCourses = [
+  { id:1, title: 'React desde cero: Guia completa de hooks y componentes', instructor: 'Juan Perez', category: 'Desarrollo de software', level: 'Principiante', price: '9.900' },
+  { id:2, title: 'Node.js avanzado: APIs, bases de datos y microservicios', instructor: 'Maria Garcia', category: 'Desarrollo de software', level: 'Intermedio', price: '12.900' },
+  { id:3, title: 'Fundamentos de Python: de cero a tu primer proyecto', instructor: 'Diego Rojas', category: 'Desarrollo de software', level: 'Principiante', price: '8.900' },
+  { id:4, title: 'UI/UX Design con Figma: metodologias y prototipos', instructor: 'Laura Jimenez', category: 'Diseno', level: 'Intermedio', price: '11.900' },
+  { id:5, title: 'Diseno grafico con Photoshop para principiantes', instructor: 'Roberto Araya', category: 'Diseno', level: 'Principiante', price: '7.900' },
+  { id:6, title: 'Marketing en redes sociales: de 0 a estrategia', instructor: 'Camila Vargas', category: 'Marketing digital', level: 'Principiante', price: '9.900' },
+]
+
+function CategoryBadge({ category, level }) {
+  const colors = {
+    'Desarrollo de software': { bg: 'rgba(0,168,150,0.16)', color: '#2DD4BF' },
+    'Diseno': { bg: 'rgba(212,175,55,0.16)', color: '#E8C766' },
+    'Marketing digital': { bg: 'rgba(14,165,233,0.16)', color: '#5BC8F8' },
+    default: { bg: 'rgba(255,255,255,0.14)', color: '#E8ECF4' },
+  }
+  const levelColors = {
+    'Principiante': { bg: 'rgba(0,168,150,0.16)', color: '#2DD4BF' },
+    'Intermedio': { bg: 'rgba(37,99,235,0.16)', color: '#7CA8FA' },
+    'Avanzado': { bg: 'rgba(212,175,55,0.18)', color: '#E8C766' },
+    default: { bg: 'rgba(255,255,255,0.14)', color: '#E8ECF4' },
+  }
+  const style = colors[category] || colors.default
+  const lStyle = levelColors[level] || levelColors.default
+  return (
+    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
+      <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '999px', background: style.bg, color: style.color }}>{category}</span>
+      <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '999px', background: lStyle.bg, color: lStyle.color }}>{level}</span>
+    </div>
+  )
 }
 
-const buttonStyle = {
-  display: 'inline-block',
-  background: 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)',
-  color: '#fff',
-  fontSize: '16px',
-  fontWeight: 700,
-  padding: '14px 28px',
-  borderRadius: '12px',
-  textDecoration: 'none',
-  cursor: 'pointer',
-  boxShadow: '0 12px 24px rgba(139, 92, 246, 0.2)',
-  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-}
+const aboutCards = [
+  {
+    title: 'Mision',
+    icon: '🎯',
+    text: 'Democratizar la educacion tecnologica y hacerla accesible para cualquier persona, ofreciendo formacion de alta calidad, practica y alineada con las demandas reales de la industria.',
+  },
+  {
+    title: 'Vision',
+    icon: '🚀',
+    text: 'Convertirnos en la plataforma educativa en tecnologia mas confiable de la region, reconocida por transformar carreras y empresas.',
+  },
+  {
+    title: 'Nuestra Historia',
+    icon: '📖',
+    text: 'AulaDigital Pro nacio de una idea sencilla: la mejor manera de aprender es haciendo. Hoy somos una comunidad en crecimiento que impulsa talento digital.',
+  },
+]
+
+const stats = [
+  { value: '27+', label: 'Cursos profesionales' },
+  { value: '100K+', label: 'Estudiantes activos' },
+  { value: '4.8', label: 'Valoración media' },
+  { value: '99%', label: 'Satisfacción' },
+]
 
 export default function Home() {
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
-    fetch(API_URL)
-      .then((response) => {
-        if (!response.ok) throw new Error('Error al cargar los cursos')
-        return response.json()
-      })
-      .then((data) => setCourses(data))
-      .catch(() => setError('No pudimos cargar los cursos destacados. Inténtalo de nuevo más tarde.'))
-      .finally(() => setLoading(false))
+    let active = true
+    async function loadCourses() {
+      try {
+        const response = await fetch(API_URL)
+        const data = await response.json()
+        if (active) setCourses(data)
+      } catch {
+        if (active) setCourses(fallbackCourses)
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+    loadCourses()
+    return () => { active = false }
   }, [])
 
   const featured = courses.slice(0, 6)
 
   return (
-    <div style={{ fontFamily: FONT, minHeight: '100vh', background: '#F8FAFC' }}>
-      {/* Hero */}
+    <div style={{ minHeight: '100vh', background: gradients.app, fontFamily: FONT, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '-160px', left: '-140px', width: '560px', height: '560px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '-180px', right: '-160px', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(245,179,1,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+      <header className="home-topbar">
+        <Link to="/" style={{ display: 'flex', textDecoration: 'none', flexShrink: 0 }}>
+          <BrandLogo compact size="md" tone="light" />
+        </Link>
+        <Link className="home-topbar__login" to="/login">Iniciar sesión</Link>
+      </header>
+
       <section className="home-hero">
-        <div className="home-hero__content">
-          <span className="home-hero__eyebrow">Aprendizaje que se convierte en acción</span>
-          <h1>Aprende hoy las habilidades que abrirán tu próximo camino.</h1>
-          <p>
-            Cursos prácticos, proyectos reales y acompañamiento experto para avanzar con confianza
-            en el mundo digital.
-          </p>
-          <Link to="/login" style={buttonStyle}>
-            Explorar cursos
-          </Link>
-          <small>Empieza a tu ritmo. Cancela cuando quieras.</small>
+        <span className="home-hero__eyebrow">✨ Aprendizaje que se convierte en acción</span>
+        <BrandLogo size="xl" tone="light" />
+        <h1 className="home-hero__title">Bienvenido a la nueva forma de aprender digital</h1>
+        <p className="home-hero__subtitle">Domina habilidades en tecnología, diseño y negocios con cursos prácticos, proyectos reales y acompañamiento experto.</p>
+        <div className="home-hero__actions">
+          <Link className="home-cta home-cta--primary" to="/login">Explorar Cursos</Link>
+          <Link className="home-cta home-cta--ghost" to="/login">Iniciar Sesión</Link>
         </div>
-        <div className="home-hero__visual" aria-label="Estudiante aprendiendo en AulaDigitalPro">
-          <div className="home-hero__shape home-hero__shape--mint" />
-          <div className="home-hero__shape home-hero__shape--peach" />
-          <div className="home-hero__shape home-hero__shape--yellow" />
-          <img
-            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85"
-            alt="Estudiante trabajando en un curso digital"
-          />
-          <div className="home-hero__note">+ habilidades reales</div>
-          <div className="home-hero__badge">Aprende a tu ritmo</div>
+        <p className="home-hero__note">Empieza a tu ritmo. Cancela cuando quieras.</p>
+      </section>
+
+      <section className="home-stats">
+        {stats.map((stat) => (
+          <div key={stat.label} className="home-stat">
+            <div className="home-stat__value">{stat.value}</div>
+            <div className="home-stat__label">{stat.label}</div>
+          </div>
+        ))}
+      </section>
+
+      <section className="home-section">
+        <div className="home-section__head">
+          <h2>Sobre Nosotros</h2>
+          <p>Construimos el futuro digital, un estudiante a la vez.</p>
+        </div>
+        <div className="home-cards">
+          {aboutCards.map((card) => (
+            <div key={card.title} className="home-card home-card--about">
+              <div className="home-card__icon">{card.icon}</div>
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Sobre nosotros */}
-      <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '64px 24px' }}>
-        <h2 style={sectionTitleStyle}>Sobre Nosotros</h2>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '24px',
-            marginTop: '32px',
-          }}
-        >
-          <div
-            style={{
-              background: '#F8FAFC',
-              border: `1px solid ${BORDER}`,
-              borderRadius: '12px',
-              padding: '24px',
-            }}
-          >
-            <h3 style={{ fontSize: '20px', fontWeight: 700, color: PRIMARY_DARK, margin: '0 0 12px' }}>
-              Misión
-            </h3>
-            <p style={{ fontSize: '15px', color: TEXT_MUTED, lineHeight: 1.7, margin: 0 }}>
-              Democratizar la educación tecnológica y hacerla accesible para cualquier persona,
-              ofreciendo formación de alta calidad, práctica y alineada con las demandas reales de
-              la industria. Creemos que el talento no entiende de fronteras, y nuestra misión es
-              darle las herramientas para que despegue.
-            </p>
-          </div>
-          <div
-            style={{
-              background: '#F8FAFC',
-              border: `1px solid ${BORDER}`,
-              borderRadius: '12px',
-              padding: '24px',
-            }}
-          >
-            <h3 style={{ fontSize: '20px', fontWeight: 700, color: PRIMARY_DARK, margin: '0 0 12px' }}>
-              Visión
-            </h3>
-            <p style={{ fontSize: '15px', color: TEXT_MUTED, lineHeight: 1.7, margin: 0 }}>
-              Convertirnos en la plataforma educativa en tecnología más confiable de la región,
-              reconocida por transformar carreras y empresas. Soñamos con un ecosistema donde cada
-              estudiante, sin importar su punto de partida, pueda construir un futuro mejor a través
-              del conocimiento.
-            </p>
-          </div>
-          <div
-            style={{
-              background: '#F8FAFC',
-              border: `1px solid ${BORDER}`,
-              borderRadius: '12px',
-              padding: '24px',
-            }}
-          >
-            <h3 style={{ fontSize: '20px', fontWeight: 700, color: PRIMARY_DARK, margin: '0 0 12px' }}>
-              Nuestra Historia
-            </h3>
-            <p style={{ fontSize: '15px', color: TEXT_MUTED, lineHeight: 1.7, margin: 0 }}>
-              AulaDigital Pro nació de una idea sencilla: la mejor manera de aprender es haciendo.
-              Comenzamos como un pequeño proyecto con unos pocos cursos y una convicción enorme.
-              Hoy somos una comunidad en crecimiento que acompaña a miles de estudiantes en su
-              trayecto hacia el dominio de la tecnología, curso a curso, proyecto a proyecto.
-            </p>
-          </div>
+      <section className="home-section">
+        <div className="home-section__head">
+          <h2>Cursos destacados</h2>
+          <p>Una selección de nuestra oferta formativa para arrancar tu trayecto.</p>
         </div>
-      </section>
-
-      {/* Cursos destacados */}
-      <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px 64px' }}>
-        <h2 style={sectionTitleStyle}>Cursos Destacados</h2>
-        <p
-          style={{
-            fontSize: '16px',
-            color: TEXT_MUTED,
-            textAlign: 'center',
-            margin: '0 0 32px',
-          }}
-        >
-          Una selección de nuestra oferta formativa para arrancar tu trayecto.
-        </p>
-
         {loading ? (
-          <p style={{ fontSize: '16px', color: TEXT_MUTED, textAlign: 'center' }}>
-            Cargando cursos desde JSON Server...
-          </p>
-        ) : error ? (
-          <p style={{ fontSize: '16px', color: '#b42318', textAlign: 'center' }}>{error}</p>
+          <p className="home-loading">Cargando cursos desde JSON Server...</p>
         ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-              gap: '24px',
-            }}
-          >
+          <div className="home-courses">
             {featured.map((course) => (
-              <div
-                key={course.id}
-                style={{
-                  border: `1px solid ${BORDER}`,
-                  borderRadius: '12px',
-                  padding: '16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04)',
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: 700,
-                    color: TEXT,
-                    margin: '0 0 8px',
-                    minHeight: '42px',
-                  }}
-                >
-                  {course.title}
-                </h3>
-                <p
-                  style={{
-                    fontSize: '14px',
-                    color: TEXT_MUTED,
-                    lineHeight: 1.5,
-                    margin: '0 0 8px',
-                    flex: 1,
-                  }}
-                >
-                  {course.instructor}
-                </p>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '8px',
-                    marginBottom: '8px',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      color: PRIMARY_DARK,
-                      background: '#D1FAE5',
-                      padding: '3px 8px',
-                      borderRadius: '4px',
-                    }}
-                  >
-                    {course.category} · {course.level}
-                  </span>
-                  {course.price !== 'Gratis' && (
-                    <span style={{ fontSize: '16px', fontWeight: 700, color: TEXT }}>
-                      {course.price}
-                    </span>
+              <div key={course.id} className="home-card home-card--course">
+                <CategoryBadge category={course.category} level={course.level} />
+                <h3>{course.title}</h3>
+                <p className="home-card__instructor">{course.instructor}</p>
+                <div className="home-card__price">
+                  {course.price !== 'Gratis' ? (
+                    <span className="home-card__value">{course.price}</span>
+                  ) : (
+                    <span className="home-card__free">Gratis</span>
                   )}
                 </div>
               </div>
             ))}
           </div>
         )}
-
-        <div style={{ textAlign: 'center', marginTop: '36px' }}>
-          <Link to="/login" style={buttonStyle}>
-            Ver más
-          </Link>
+        <div className="home-more">
+          <Link className="home-cta home-cta--ghost" to="/login">Ver todos los cursos</Link>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{ background: '#3B82F6', color: '#fff', textAlign: 'center', padding: '24px' }}>
-        <p style={{ fontSize: '14px', margin: 0 }}>© 2026 AulaDigital Pro</p>
+      <footer className="home-footer">
+        <BrandLogo compact tone="light" />
+        <p>© 2026 AulaDigital Pro. Todos los derechos reservados.</p>
+        <div className="home-footer__links">
+          {['Privacidad','Terminos','Contacto'].map((link) => (
+            <a key={link} href="#">{link}</a>
+          ))}
+        </div>
       </footer>
     </div>
   )
