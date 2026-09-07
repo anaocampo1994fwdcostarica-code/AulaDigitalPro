@@ -1,13 +1,30 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import BrandLogo from './BrandLogo'
 import { FONT, palette, gradients } from '../theme'
 
 export default function Navbar({ user, onLogout }) {
   const [searchFocused, setSearchFocused] = useState(false)
   const [logoutHover, setLogoutHover] = useState(false)
+  const [search, setSearch] = useState('')
+  const navigate = useNavigate()
 
   const firstName = user?.name ? user.name.split(' ')[0] : ''
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault()
+    const term = search.trim()
+    if (term) {
+      navigate(`/dashboard?search=${encodeURIComponent(term)}`)
+    } else {
+      navigate('/dashboard')
+    }
+  }
+
+  const handleLogout = () => {
+    onLogout()
+    navigate('/login')
+  }
 
   return (
     <header
@@ -37,20 +54,22 @@ export default function Navbar({ user, onLogout }) {
           to="/dashboard"
           style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }}
         >
-          <BrandLogo compact size="sm" tone="light" />
+          <BrandLogo compact size="md" tone="light" />
         </Link>
 
         {/* Barra de busqueda */}
-        <div style={{ flex: 1, maxWidth: 540, position: 'relative' }}>
+        <form onSubmit={handleSearchSubmit} style={{ flex: 1, maxWidth: 540, position: 'relative' }}>
           <svg
+            onClick={handleSearchSubmit}
             style={{
               position: 'absolute',
               left: 16,
               top: '50%',
               transform: 'translateY(-50%)',
-              color: searchFocused ? palette.goldBright : 'rgba(255,255,255,0.45)',
+              color: searchFocused ? palette.sky : 'rgba(255,255,255,0.45)',
               transition: 'color 0.2s ease',
-              pointerEvents: 'none',
+              pointerEvents: 'auto',
+              cursor: 'pointer',
             }}
             width="16"
             height="16"
@@ -66,25 +85,27 @@ export default function Navbar({ user, onLogout }) {
           </svg>
           <input
             type="search"
-            placeholder="Buscar cursos..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Buscar cursos... (Enter)"
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
             style={{
               width: '100%',
               padding: '11px 18px 11px 42px',
               borderRadius: 999,
-              border: `1.5px solid ${searchFocused ? palette.goldBright : 'rgba(255,255,255,0.2)'}`,
+              border: `1.5px solid ${searchFocused ? palette.sky : 'rgba(255,255,255,0.2)'}`,
               background: searchFocused ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)',
               fontSize: 14,
               outline: 'none',
               boxSizing: 'border-box',
-              boxShadow: searchFocused ? '0 0 0 4px rgba(245,179,1,0.15)' : 'none',
+              boxShadow: searchFocused ? '0 0 0 4px rgba(14,165,233,0.15)' : 'none',
               transition: 'all 0.2s ease',
               color: '#FFFFFF',
               fontFamily: FONT,
             }}
           />
-        </div>
+        </form>
 
         {/* Enlaces y sesion */}
         <nav
@@ -101,11 +122,11 @@ export default function Navbar({ user, onLogout }) {
               style={({ isActive }) => ({
                 fontSize: 14,
                 fontWeight: 700,
-                color: isActive ? palette.goldBright : 'rgba(255,255,255,0.92)',
+                color: isActive ? palette.sky : 'rgba(255,255,255,0.92)',
                 textDecoration: 'none',
                 padding: '8px 14px',
                 borderRadius: 999,
-                background: isActive ? 'rgba(245,179,1,0.12)' : 'transparent',
+                background: isActive ? 'rgba(14,165,233,0.14)' : 'transparent',
                 transition: 'all 0.2s ease',
               })}
             >
@@ -130,29 +151,8 @@ export default function Navbar({ user, onLogout }) {
                 Hola, {firstName}
               </span>
 
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  fontSize: '11.5px',
-                  fontWeight: 800,
-                  letterSpacing: '0.03em',
-                  textTransform: 'uppercase',
-                  padding: '6px 14px',
-                  borderRadius: 999,
-                  background: gradients.gold,
-                  color: '#4A2F00',
-                  boxShadow: '0 6px 16px rgba(212,175,55,0.5)',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <span style={{ fontSize: 13 }}>👑</span>
-                {user.role === 'admin' ? 'Admin Pro' : 'Usuario Pro'}
-              </span>
-
               <button
-                onClick={onLogout}
+                onClick={handleLogout}
                 onMouseEnter={() => setLogoutHover(true)}
                 onMouseLeave={() => setLogoutHover(false)}
                 style={{

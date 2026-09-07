@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import CourseCard from '../components/CourseCard'
 import { FONT, palette, gradients } from '../theme'
@@ -33,39 +34,51 @@ const ratingOptions = [
 ]
 const priceOptions = ['Gratis', 'De pago']
 
+const categoryImages = {
+  'Desarrollo de software': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=60',
+  'Diseno': 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=400&q=60',
+  'Marketing digital': 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&w=400&q=60',
+  'Gestion de negocios': 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=400&q=60',
+  'TI y software': 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=60',
+  'Desarrollo personal': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=60',
+  'Finanzas': 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=60',
+  'Musica': 'https://images.unsplash.com/photo-1506152983158-b4a74a01c721?auto=format&fit=crop&w=400&q=60',
+  'Productividad': 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=400&q=60',
+}
+
 const fallbackCourses = [
-  { id: 1, title: 'React desde cero: Guia completa de hooks y componentes', instructor: 'Juan Perez', category: 'Desarrollo de software', level: 'Principiante', price: '9.900', oldPrice: '49.900', rating: 4.7, students: '12,540', image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=60' },
-  { id: 2, title: 'Node.js avanzado: APIs, bases de datos y microservicios', instructor: 'Maria Garcia', category: 'Desarrollo de software', level: 'Intermedio', price: '12.900', oldPrice: '59.900', rating: 4.8, students: '8,210', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=400&q=60' },
-  { id: 3, title: 'Fundamentos de Python: de cero a tu primer proyecto', instructor: 'Diego Rojas', category: 'Desarrollo de software', level: 'Principiante', price: '8.900', oldPrice: '39.900', rating: 4.3, students: '18,760', image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=400&q=60' },
-  { id: 4, title: 'UI/UX Design con Figma: metodologias y prototipos', instructor: 'Laura Jimenez', category: 'Diseno', level: 'Intermedio', price: '11.900', oldPrice: '54.900', rating: 4.6, students: '9,430', image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=400&q=60' },
-  { id: 5, title: 'Diseno grafico con Photoshop para principiantes', instructor: 'Roberto Araya', category: 'Diseno', level: 'Principiante', price: '7.900', oldPrice: '35.900', rating: 3.8, students: '5,110', image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=400&q=60' },
-  { id: 6, title: 'Marketing en redes sociales: de 0 a estrategia', instructor: 'Camila Vargas', category: 'Marketing digital', level: 'Principiante', price: '9.900', oldPrice: '45.900', rating: 4.5, students: '14,020', image: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&w=400&q=60' },
-  { id: 7, title: 'SEO y Google Ads: posiciona y vende mas', instructor: 'Pablo Navarro', category: 'Marketing digital', level: 'Intermedio', price: '6.900', oldPrice: '30.900', rating: 3.4, students: '3,850', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=60' },
-  { id: 8, title: 'Gestion de proyectos agiles con Scrum', instructor: 'Andrea Mora', category: 'Gestion de negocios', level: 'Intermedio', price: '10.900', oldPrice: '49.900', rating: 4.6, students: '6,740', image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=400&q=60' },
-  { id: 9, title: 'Emprende tu negocio desde cero', instructor: 'Fernando Castro', category: 'Gestion de negocios', level: 'Principiante', price: '9.900', oldPrice: '44.900', rating: 4.2, students: '11,390', image: 'https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&w=400&q=60' },
-  { id: 10, title: 'Cloud computing con AWS: arquitecturas reales', instructor: 'Ivan Solano', category: 'TI y software', level: 'Avanzado', price: '14.900', oldPrice: '69.900', rating: 4.7, students: '7,860', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=60' },
-  { id: 11, title: 'Ciberseguridad esencial para desarrolladores', instructor: 'Natalia Vega', category: 'TI y software', level: 'Principiante', price: '9.900', oldPrice: '39.900', rating: 3.9, students: '4,280', image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=400&q=60' },
-  { id: 12, title: 'Productividad personal con tecnicas probadas', instructor: 'Oscar Leiton', category: 'Productividad', level: 'Principiante', price: 'Gratis', oldPrice: null, rating: 4.1, students: '22,150', image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=60' },
-  { id: 13, title: 'Inteligencia emocional en el trabajo', instructor: 'Valentina Rios', category: 'Desarrollo personal', level: 'Intermedio', price: '5.900', oldPrice: '25.900', rating: 3.6, students: '9,670', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=400&q=60' },
-  { id: 14, title: 'Angular moderno: de componentes a servicios', instructor: 'Andres Vargas', category: 'Desarrollo de software', level: 'Intermedio', price: '11.900', oldPrice: '52.900', rating: 4.4, students: '7,540', image: 'https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?auto=format&fit=crop&w=400&q=60' },
-  { id: 15, title: 'SQL y bases de datos: modelado para datos reales', instructor: 'Karla Cordero', category: 'Desarrollo de software', level: 'Principiante', price: '8.900', oldPrice: '38.900', rating: 4.0, students: '15,320', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=60' },
-  { id: 16, title: 'Animacion 2D y motion graphics', instructor: 'Esteban Rojas', category: 'Diseno', level: 'Avanzado', price: '13.900', oldPrice: '59.900', rating: 4.4, students: '2,980', image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=400&q=60' },
-  { id: 17, title: 'Illustrator para ilustracion digital', instructor: 'Melissa Quesada', category: 'Diseno', level: 'Intermedio', price: '9.900', oldPrice: '44.900', rating: 4.0, students: '4,760', image: 'https://images.unsplash.com/photo-1611926653458-09294b3142bf?auto=format&fit=crop&w=400&q=60' },
-  { id: 18, title: 'Publicidad digital: Facebook e Instagram Ads', instructor: 'Javier Urena', category: 'Marketing digital', level: 'Avanzado', price: '10.900', oldPrice: '49.900', rating: 3.5, students: '6,240', image: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=400&q=60' },
-  { id: 19, title: 'Email marketing y automatizaciones', instructor: 'Paula Brenes', category: 'Marketing digital', level: 'Principiante', price: '7.900', oldPrice: '34.900', rating: 4.0, students: '8,510', image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=400&q=60' },
-  { id: 20, title: 'Finanzas para emprendedores', instructor: 'Cristian Alfaro', category: 'Finanzas', level: 'Avanzado', price: '12.900', oldPrice: '54.900', rating: 3.7, students: '3,460', image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=400&q=60' },
-  { id: 21, title: 'Liderazgo y gestion de equipos', instructor: 'Daniel Salas', category: 'Gestion de negocios', level: 'Intermedio', price: '10.900', oldPrice: '49.900', rating: 4.3, students: '7,980', image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=400&q=60' },
-  { id: 22, title: 'Docker y Kubernetes: contenedores en produccion', instructor: 'Mario Picado', category: 'TI y software', level: 'Intermedio', price: '19.900', oldPrice: '79.900', rating: 4.2, students: '5,730', image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=400&q=60' },
-  { id: 23, title: 'Comunicacion efectiva: expresa y convence', instructor: 'Gabriela Nunez', category: 'Desarrollo personal', level: 'Principiante', price: 'Gratis', oldPrice: null, rating: 4.4, students: '19,430', image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=60' },
-  { id: 24, title: 'Inversiones y mercados: comienza a invertir', instructor: 'Adriana Campos', category: 'Finanzas', level: 'Principiante', price: '12.900', oldPrice: '54.900', rating: 4.5, students: '4,150', image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=60' },
-  { id: 25, title: 'Guitarra acustica desde cero', instructor: 'Jose Ospina', category: 'Musica', level: 'Principiante', price: '9.900', oldPrice: '42.900', rating: 4.6, students: '16,870', image: 'https://images.unsplash.com/photo-1506152983158-b4a74a01c721?auto=format&fit=crop&w=400&q=60' },
-  { id: 26, title: 'Produccion musical con Ableton', instructor: 'Santiago Peralta', category: 'Musica', level: 'Intermedio', price: '13.900', oldPrice: '59.900', rating: 4.3, students: '7,250', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=60' },
-  { id: 27, title: 'Gestion del tiempo con tecnicas agiles', instructor: 'Patricia Solano', category: 'Productividad', level: 'Intermedio', price: '8.900', oldPrice: '38.900', rating: 4.5, students: '11,640', image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=400&q=60' },
+  { id: 1, title: 'React desde cero: Guia completa de hooks y componentes', instructor: 'Juan Perez', category: 'Desarrollo de software', level: 'Principiante', price: '9.900', oldPrice: '49.900', rating: 4.7, students: '12,540', image: categoryImages['Desarrollo de software'] },
+  { id: 2, title: 'Node.js avanzado: APIs, bases de datos y microservicios', instructor: 'Maria Garcia', category: 'Desarrollo de software', level: 'Intermedio', price: '12.900', oldPrice: '59.900', rating: 4.8, students: '8,210', image: categoryImages['Desarrollo de software'] },
+  { id: 3, title: 'Fundamentos de Python: de cero a tu primer proyecto', instructor: 'Diego Rojas', category: 'Desarrollo de software', level: 'Principiante', price: '8.900', oldPrice: '39.900', rating: 4.3, students: '18,760', image: categoryImages['Desarrollo de software'] },
+  { id: 4, title: 'UI/UX Design con Figma: metodologias y prototipos', instructor: 'Laura Jimenez', category: 'Diseno', level: 'Intermedio', price: '11.900', oldPrice: '54.900', rating: 4.6, students: '9,430', image: categoryImages['Diseno'] },
+  { id: 5, title: 'Diseno grafico con Photoshop para principiantes', instructor: 'Roberto Araya', category: 'Diseno', level: 'Principiante', price: '7.900', oldPrice: '35.900', rating: 3.8, students: '5,110', image: categoryImages['Diseno'] },
+  { id: 6, title: 'Marketing en redes sociales: de 0 a estrategia', instructor: 'Camila Vargas', category: 'Marketing digital', level: 'Principiante', price: '9.900', oldPrice: '45.900', rating: 4.5, students: '14,020', image: categoryImages['Marketing digital'] },
+  { id: 7, title: 'SEO y Google Ads: posiciona y vende mas', instructor: 'Pablo Navarro', category: 'Marketing digital', level: 'Intermedio', price: '6.900', oldPrice: '30.900', rating: 3.4, students: '3,850', image: categoryImages['Marketing digital'] },
+  { id: 8, title: 'Gestion de proyectos agiles con Scrum', instructor: 'Andrea Mora', category: 'Gestion de negocios', level: 'Intermedio', price: '10.900', oldPrice: '49.900', rating: 4.6, students: '6,740', image: categoryImages['Gestion de negocios'] },
+  { id: 9, title: 'Emprende tu negocio desde cero', instructor: 'Fernando Castro', category: 'Gestion de negocios', level: 'Principiante', price: '9.900', oldPrice: '44.900', rating: 4.2, students: '11,390', image: categoryImages['Gestion de negocios'] },
+  { id: 10, title: 'Cloud computing con AWS: arquitecturas reales', instructor: 'Ivan Solano', category: 'TI y software', level: 'Avanzado', price: '14.900', oldPrice: '69.900', rating: 4.7, students: '7,860', image: categoryImages['TI y software'] },
+  { id: 11, title: 'Ciberseguridad esencial para desarrolladores', instructor: 'Natalia Vega', category: 'TI y software', level: 'Principiante', price: '9.900', oldPrice: '39.900', rating: 3.9, students: '4,280', image: categoryImages['TI y software'] },
+  { id: 12, title: 'Productividad personal con tecnicas probadas', instructor: 'Oscar Leiton', category: 'Productividad', level: 'Principiante', price: 'Gratis', oldPrice: null, rating: 4.1, students: '22,150', image: categoryImages['Productividad'] },
+  { id: 13, title: 'Inteligencia emocional en el trabajo', instructor: 'Valentina Rios', category: 'Desarrollo personal', level: 'Intermedio', price: '5.900', oldPrice: '25.900', rating: 3.6, students: '9,670', image: categoryImages['Desarrollo personal'] },
+  { id: 14, title: 'Angular moderno: de componentes a servicios', instructor: 'Andres Vargas', category: 'Desarrollo de software', level: 'Intermedio', price: '11.900', oldPrice: '52.900', rating: 4.4, students: '7,540', image: categoryImages['Desarrollo de software'] },
+  { id: 15, title: 'SQL y bases de datos: modelado para datos reales', instructor: 'Karla Cordero', category: 'Desarrollo de software', level: 'Principiante', price: '8.900', oldPrice: '38.900', rating: 4.0, students: '15,320', image: categoryImages['Desarrollo de software'] },
+  { id: 16, title: 'Animacion 2D y motion graphics', instructor: 'Esteban Rojas', category: 'Diseno', level: 'Avanzado', price: '13.900', oldPrice: '59.900', rating: 4.4, students: '2,980', image: categoryImages['Diseno'] },
+  { id: 17, title: 'Illustrator para ilustracion digital', instructor: 'Melissa Quesada', category: 'Diseno', level: 'Intermedio', price: '9.900', oldPrice: '44.900', rating: 4.0, students: '4,760', image: categoryImages['Diseno'] },
+  { id: 18, title: 'Publicidad digital: Facebook e Instagram Ads', instructor: 'Javier Urena', category: 'Marketing digital', level: 'Avanzado', price: '10.900', oldPrice: '49.900', rating: 3.5, students: '6,240', image: categoryImages['Marketing digital'] },
+  { id: 19, title: 'Email marketing y automatizaciones', instructor: 'Paula Brenes', category: 'Marketing digital', level: 'Principiante', price: '7.900', oldPrice: '34.900', rating: 4.0, students: '8,510', image: categoryImages['Marketing digital'] },
+  { id: 20, title: 'Finanzas para emprendedores', instructor: 'Cristian Alfaro', category: 'Finanzas', level: 'Avanzado', price: '12.900', oldPrice: '54.900', rating: 3.7, students: '3,460', image: categoryImages['Finanzas'] },
+  { id: 21, title: 'Liderazgo y gestion de equipos', instructor: 'Daniel Salas', category: 'Gestion de negocios', level: 'Intermedio', price: '10.900', oldPrice: '49.900', rating: 4.3, students: '7,980', image: categoryImages['Gestion de negocios'] },
+  { id: 22, title: 'Docker y Kubernetes: contenedores en produccion', instructor: 'Mario Picado', category: 'TI y software', level: 'Intermedio', price: '19.900', oldPrice: '79.900', rating: 4.2, students: '5,730', image: categoryImages['TI y software'] },
+  { id: 23, title: 'Comunicacion efectiva: expresa y convence', instructor: 'Gabriela Nunez', category: 'Desarrollo personal', level: 'Principiante', price: 'Gratis', oldPrice: null, rating: 4.4, students: '19,430', image: categoryImages['Desarrollo personal'] },
+  { id: 24, title: 'Inversiones y mercados: comienza a invertir', instructor: 'Adriana Campos', category: 'Finanzas', level: 'Principiante', price: '12.900', oldPrice: '54.900', rating: 4.5, students: '4,150', image: categoryImages['Finanzas'] },
+  { id: 25, title: 'Guitarra acustica desde cero', instructor: 'Jose Ospina', category: 'Musica', level: 'Principiante', price: '9.900', oldPrice: '42.900', rating: 4.6, students: '16,870', image: categoryImages['Musica'] },
+  { id: 26, title: 'Produccion musical con Ableton', instructor: 'Santiago Peralta', category: 'Musica', level: 'Intermedio', price: '13.900', oldPrice: '59.900', rating: 4.3, students: '7,250', image: categoryImages['Musica'] },
+  { id: 27, title: 'Gestion del tiempo con tecnicas agiles', instructor: 'Patricia Solano', category: 'Productividad', level: 'Intermedio', price: '8.900', oldPrice: '38.900', rating: 4.5, students: '11,640', image: categoryImages['Productividad'] },
 ]
 
-const textPrimary = '#FFFFFF'
-const textSecondary = 'rgba(255,255,255,0.75)'
-const borderColor = 'rgba(255,255,255,0.22)'
+const textPrimary = '#1C1D1F'
+const textSecondary = '#6A6F73'
+const borderColor = '#DEE3E8'
 
 const inputStyle = {
   width: '100%',
@@ -75,15 +88,15 @@ const inputStyle = {
   borderRadius: '10px',
   outline: 'none',
   boxSizing: 'border-box',
-  background: 'rgba(255,255,255,0.08)',
-  color: '#FFFFFF',
+  background: '#FFFFFF',
+  color: textPrimary,
   fontFamily: FONT,
 }
 
 function FilterSection({ title, children }) {
   return (
-    <section style={{ borderBottom: `1px solid rgba(255,255,255,0.14)`, padding: '14px 0' }}>
-      <h3 style={{ fontSize: '11px', fontWeight: 800, color: 'rgba(255,255,255,0.55)', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+    <section style={{ borderBottom: `1px solid #ECEEF1`, padding: '14px 0' }}>
+      <h3 style={{ fontSize: '11px', fontWeight: 800, color: textSecondary, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
         {title}
       </h3>
       {children}
@@ -92,6 +105,7 @@ function FilterSection({ title, children }) {
 }
 
 export default function Dashboard({ user, onLogout }) {
+  const [searchParams] = useSearchParams()
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -104,6 +118,8 @@ export default function Dashboard({ user, onLogout }) {
   const [selectedLevels, setSelectedLevels] = useState([])
   const [selectedPrices, setSelectedPrices] = useState([])
   const isAdmin = user?.role === 'admin'
+
+  const searchTerm = (searchParams.get('search') || '').toLowerCase()
 
   useEffect(() => {
     fetch('/api/courses')
@@ -141,6 +157,10 @@ export default function Dashboard({ user, onLogout }) {
   ].some((list) => list.length > 0)
 
   const filteredCourses = courses.filter((course) => {
+    const matchesSearch =
+      !searchTerm ||
+      `${course.title} ${course.instructor} ${course.category}`.toLowerCase().includes(searchTerm)
+
     const matchesCategory =
       selectedCategories.length === 0 || selectedCategories.includes(course.category)
 
@@ -160,7 +180,7 @@ export default function Dashboard({ user, onLogout }) {
         price === 'Gratis' ? course.price === 'Gratis' : course.price !== 'Gratis'
       )
 
-    return matchesCategory && matchesRating && matchesLevel && matchesPrice
+    return matchesSearch && matchesCategory && matchesRating && matchesLevel && matchesPrice
   })
 
   const handleCreate = async (event) => {
@@ -176,7 +196,7 @@ export default function Dashboard({ user, onLogout }) {
       oldPrice: '49.900',
       rating: 4.5,
       students: '0',
-      image: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?auto=format&fit=crop&w=400&q=60',
+      image: categoryImages[newCategory] || fallbackCourses[0].image,
     }
 
     try {
@@ -186,6 +206,7 @@ export default function Dashboard({ user, onLogout }) {
         body: JSON.stringify(newCourse),
       })
       const created = await response.json()
+      created.image = categoryImages[newCategory] || fallbackCourses[0].image
       setCourses((prev) => [...prev, created])
       setTitle('')
       setInstructor('')
@@ -226,18 +247,18 @@ export default function Dashboard({ user, onLogout }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: gradients.app, fontFamily: FONT, position: 'relative' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', fontFamily: FONT, position: 'relative' }}>
       <Navbar user={user} onLogout={onLogout} />
 
       {/* Barra de categorias */}
-      <div style={{ background: 'rgba(255,255,255,0.10)', borderBottom: '1px solid rgba(255,255,255,0.16)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+      <div style={{ background: '#F7F8FA', borderBottom: '1px solid #ECEEF1', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, maxWidth: 1280, margin: '0 auto', padding: '8px 28px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
           <button
             onClick={clearFilters}
-            style={{ fontSize: 13, fontWeight: 800, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.28)', padding: '7px 14px', cursor: 'pointer', borderRadius: 999, flexShrink: 0, fontFamily: FONT, transition: 'all 0.2s' }}
+            style={{ fontSize: 13, fontWeight: 800, color: palette.ink, display: 'flex', alignItems: 'center', gap: 6, background: '#FFFFFF', border: `1px solid ${borderColor}`, padding: '7px 14px', cursor: 'pointer', borderRadius: 999, flexShrink: 0, fontFamily: FONT, transition: 'all 0.2s' }}
           >
             Explorar
-            <span style={{ fontSize: 9, opacity: 0.7 }}>▼</span>
+            <span style={{ fontSize: 9, opacity: 0.6 }}>▼</span>
           </button>
           {navCategories.map(({ label, category }) => {
             const isActive = selectedCategories.length === 1 && selectedCategories[0] === category
@@ -248,15 +269,15 @@ export default function Dashboard({ user, onLogout }) {
                 style={{
                   fontSize: 13,
                   fontWeight: isActive ? 800 : 600,
-                  color: isActive ? palette.purple : 'rgba(255,255,255,0.94)',
-                  background: isActive ? '#FFFFFF' : 'transparent',
-                  border: `1px solid ${isActive ? 'transparent' : 'rgba(255,255,255,0.25)'}`,
+                  color: isActive ? '#FFFFFF' : textPrimary,
+                  background: isActive ? palette.purple : 'transparent',
+                  border: `1px solid ${isActive ? 'transparent' : borderColor}`,
                   borderRadius: 999,
                   padding: '7px 14px',
                   cursor: 'pointer',
                   flexShrink: 0,
                   fontFamily: FONT,
-                  boxShadow: isActive ? '0 8px 18px rgba(20, 5, 45, 0.22)' : 'none',
+                  boxShadow: isActive ? '0 8px 18px rgba(109,40,217,0.25)' : 'none',
                   transition: 'all 0.2s ease',
                 }}
               >
@@ -269,29 +290,16 @@ export default function Dashboard({ user, onLogout }) {
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 28px', position: 'relative', zIndex: 1, boxSizing: 'border-box' }}>
         {error && (
-          <div style={{ background: 'rgba(220, 38, 38, 0.16)', border: '1px solid rgba(252, 165, 165, 0.4)', color: '#FECACA', fontSize: '14px', fontWeight: 600, padding: '12px 16px', borderRadius: '12px', marginBottom: '20px' }}>
+          <div style={{ background: 'rgba(220, 38, 38, 0.08)', border: '1px solid rgba(220, 38, 38, 0.3)', color: palette.danger, fontSize: '14px', fontWeight: 600, padding: '12px 16px', borderRadius: '12px', marginBottom: '20px' }}>
             {error}
           </div>
         )}
 
-        {/* Breadcrumb + titulo */}
-        <div style={{ marginBottom: 26 }}>
-          <p style={{ fontSize: 13, margin: '0 0 8px', color: 'rgba(255,255,255,0.72)', fontWeight: 600 }}>
-            Inicio &gt; Cursos &gt; <span style={{ color: '#FFFFFF' }}>Todos</span>
-          </p>
-          <h1 style={{ fontSize: 'clamp(24px, 3.2vw, 32px)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 8px', letterSpacing: '-0.02em', fontFamily: FONT, lineHeight: 1.15 }}>
-            {filteredCourses.length} resultados para <span style={{ color: palette.goldBright }}>"todos los cursos"</span>
-          </h1>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0, fontWeight: 500 }}>
-            Bienvenido, {user.name}. Descubre los cursos de la plataforma mejor valorados por sus alumnos.
-          </p>
-        </div>
-
         {/* Panel admin: crear curso */}
         {isAdmin && (
-          <div style={{ border: `1px solid rgba(255,255,255,0.16)`, borderRadius: '18px', background: 'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 100%)', boxShadow: '0 18px 44px rgba(20,5,45,0.35)', padding: '20px 24px', marginBottom: '28px', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+          <div style={{ border: `1px solid ${borderColor}`, borderRadius: '18px', background: '#FFFFFF', boxShadow: '0 18px 44px rgba(20,5,45,0.08)', padding: '20px 24px', marginBottom: '28px' }}>
             <h3 style={{ fontSize: '15px', fontWeight: 800, color: textPrimary, margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '16px' }}>✨</span> Crear nuevo curso (Admin)
+              Crear nuevo curso (Admin)
             </h3>
             <form onSubmit={handleCreate} style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
               <div style={{ flex: '2', minWidth: '200px' }}>
@@ -322,7 +330,7 @@ export default function Dashboard({ user, onLogout }) {
                 background: gradients.btn,
                 color: '#fff', fontSize: '14px', fontWeight: 800, border: '1px solid rgba(255,255,255,0.3)',
                 padding: '11px 22px', borderRadius: '999px', cursor: 'pointer',
-                boxShadow: '0 10px 22px rgba(20, 5, 45, 0.35)',
+                boxShadow: '0 10px 22px rgba(109,40,217,0.25)',
                 transition: 'all 0.2s ease', whiteSpace: 'nowrap',
               }}>
                 + Crear curso
@@ -335,7 +343,7 @@ export default function Dashboard({ user, onLogout }) {
         <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start' }}>
 
           {/* Sidebar filtros */}
-          <aside style={{ width: 248, minWidth: 248, background: 'rgba(12,14,38,0.5)', border: '1px solid rgba(255,255,255,0.16)', borderRadius: 20, padding: '18px 22px', boxShadow: '0 24px 60px rgba(20, 5, 45, 0.4)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', fontFamily: FONT }}>
+          <aside style={{ width: 248, minWidth: 248, background: '#FFFFFF', border: `1px solid ${borderColor}`, borderRadius: 20, padding: '18px 22px', boxShadow: '0 24px 60px rgba(20, 5, 45, 0.06)', fontFamily: FONT }}>
             <FilterSection title="Categorias">
               {filterCategories.map((category) => (
                 <label key={category} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 13, color: textPrimary, cursor: 'pointer', borderRadius: 6, fontFamily: FONT }}>
@@ -369,7 +377,7 @@ export default function Dashboard({ user, onLogout }) {
               ))}
             </FilterSection>
             {hasFilters && (
-              <button onClick={clearFilters} style={{ marginTop: 14, width: '100%', background: 'rgba(255,255,255,0.1)', color: '#FFFFFF', border: `1px solid rgba(255,255,255,0.35)`, padding: 9, fontSize: 13, fontWeight: 700, borderRadius: 10, cursor: 'pointer', fontFamily: FONT, transition: 'all 0.2s ease' }}>
+              <button onClick={clearFilters} style={{ marginTop: 14, width: '100%', background: '#F1F2F4', color: textPrimary, border: `1px solid ${borderColor}`, padding: 9, fontSize: 13, fontWeight: 700, borderRadius: 10, cursor: 'pointer', fontFamily: FONT, transition: 'all 0.2s ease' }}>
                 Borrar filtros
               </button>
             )}
@@ -378,26 +386,17 @@ export default function Dashboard({ user, onLogout }) {
           {/* Grid cursos */}
           <main style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, gap: 16, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 14, color: '#FFFFFF', fontWeight: 700, background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.26)', padding: '7px 16px', borderRadius: 999, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', fontFamily: FONT }}>
+              <span style={{ fontSize: 14, color: textPrimary, fontWeight: 700, background: '#F7F8FA', border: `1px solid ${borderColor}`, padding: '7px 16px', borderRadius: 999, fontFamily: FONT }}>
                 {loading ? 'Cargando cursos...' : `${filteredCourses.length} resultados`}
               </span>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: '#FFFFFF', fontWeight: 600, fontFamily: FONT }}>
-                Ordenar por:
-                <select style={{ padding: '9px 16px', border: `1.5px solid ${borderColor}`, background: 'rgba(255,255,255,0.08)', borderRadius: 999, fontSize: 13.5, color: '#FFFFFF', outline: 'none', fontFamily: FONT, cursor: 'pointer' }}>
-                  <option>Bestsellers</option>
-                  <option>Mas valorados</option>
-                  <option>Recientes</option>
-                  <option>Precio: de menor a mayor</option>
-                </select>
-              </label>
             </div>
 
             {loading ? (
-              <div style={{ background: 'rgba(255,255,255,0.16)', border: '1.5px dashed rgba(255,255,255,0.4)', borderRadius: 20, padding: '60px 40px', textAlign: 'center', color: '#FFFFFF', fontSize: 15, fontWeight: 600, fontFamily: FONT }}>
+              <div style={{ background: '#F7F8FA', border: '1.5px dashed #D4D9DE', borderRadius: 20, padding: '60px 40px', textAlign: 'center', color: textSecondary, fontSize: 15, fontWeight: 600, fontFamily: FONT }}>
                 Cargando cursos desde JSON Server...
               </div>
             ) : filteredCourses.length === 0 ? (
-              <div style={{ background: 'rgba(12,14,38,0.5)', border: '1.5px dashed rgba(255,255,255,0.3)', borderRadius: 20, padding: '60px 40px', textAlign: 'center' }}>
+              <div style={{ background: '#FFFFFF', border: '1.5px dashed #D4D9DE', borderRadius: 20, padding: '60px 40px', textAlign: 'center' }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
                 <p style={{ fontSize: 16, fontWeight: 700, color: textPrimary, margin: '0 0 8px' }}>
                   No hay cursos que coincidan con los filtros

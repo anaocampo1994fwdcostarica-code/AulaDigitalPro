@@ -8,17 +8,17 @@
   --code-bg: #f4f3ec;
   
   --brand-primary: #6D28D9;
-  --brand-accent: #D4AF37;
+  --brand-accent: #0EA5E9;
   --brand-cyan: #0EA5E9;
-  --brand-copper: #C5A059;
+  --brand-copper: #7C3AED;
 
   /* Mapeo retrocompatible para componentes no modificados */
   --brand-purple: #7C3AED;
 
   --brand-blue: #2563EB;
-  --brand-pink: #D4AF37;
-  --brand-orange: #C5A059;
-  --brand-yellow: #D4AF37;
+  --brand-pink: #7C3AED;
+  --brand-orange: #0EA5E9;
+  --brand-yellow: #0EA5E9;
 
   --accent: var(--brand-purple);
   --accent-bg: rgba(124, 58, 237, 0.12);
@@ -132,6 +132,47 @@ code {
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(15, 76, 92, 0.3); }
   50%       { box-shadow: 0 0 0 8px rgba(15, 76, 92, 0); }
+}
+
+/* ===== Diseno Uiverse: animaciones del login ===== */
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes appear {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Campos flotantes (label sobre underline) para el login */
+.login-field { position: relative; }
+.login-field input {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: #FFFFFF;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.login-field input::placeholder { color: transparent; }
+.login-field input:focus { border-bottom-color: #8B5CF6; }
+.login-field label {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+.login-field input:focus ~ label,
+.login-field input:not(:placeholder-shown) ~ label {
+  top: -8px;
+  font-size: 12px;
+  color: #38BDF8;
 }
 
 .animate-fade-in-up  { animation: fadeInUp 0.6s ease both; }

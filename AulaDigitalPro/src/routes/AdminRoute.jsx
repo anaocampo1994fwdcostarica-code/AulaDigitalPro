@@ -58,14 +58,14 @@ export default function AdminRoute({ children, user }) {
               borderRadius: '50%',
               alignItems: 'center',
               justifyContent: 'center',
-              background: gradients.gold,
+              background: gradients.btn,
               border: '2px solid rgba(255,255,255,0.4)',
-              color: '#4A2F00',
+              color: '#FFFFFF',
               fontSize: '32px',
               fontWeight: 900,
               lineHeight: 1,
               marginBottom: '18px',
-              boxShadow: '0 10px 26px rgba(212,175,55,0.4)',
+              boxShadow: '0 10px 26px rgba(109,40,217,0.4)',
             }}
           >
             !

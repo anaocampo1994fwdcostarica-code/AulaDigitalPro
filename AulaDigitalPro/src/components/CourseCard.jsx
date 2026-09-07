@@ -7,22 +7,22 @@ const inputStyle = {
   width: '100%',
   padding: '6px 8px',
   fontSize: '14px',
-  border: '1px solid rgba(255,255,255,0.25)',
+  border: '1px solid #DEE3E8',
   borderRadius: '8px',
   outline: 'none',
   boxSizing: 'border-box',
-  background: 'rgba(255,255,255,0.08)',
-  color: '#FFFFFF',
+  background: '#FFFFFF',
+  color: '#1C1D1F',
 }
 
 function getLevelStyle(level) {
   if (level === 'Principiante') {
-    return { background: 'rgba(0, 168, 150, 0.1)', color: '#00A896' }
+    return { background: 'rgba(0, 168, 150, 0.1)', color: '#0D9488' }
   }
   if (level === 'Avanzado') {
-    return { background: 'rgba(212, 175, 55, 0.1)', color: '#B38B2D' }
+    return { background: 'rgba(212, 175, 55, 0.14)', color: '#A07E08' }
   }
-  return { background: 'rgba(37, 99, 235, 0.18)', color: '#7CA8FA' }
+  return { background: 'rgba(37, 99, 235, 0.12)', color: '#2563EB' }
 }
 
 export default function CourseCard({
@@ -63,17 +63,15 @@ export default function CourseCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: 'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 100%)',
+        background: '#FFFFFF',
         borderRadius: '18px',
         overflow: 'hidden',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
         boxShadow: hovered
-          ? '0 26px 44px -12px rgba(20, 5, 45, 0.55)'
-          : '0 10px 22px rgba(20, 5, 45, 0.3)',
+          ? '0 26px 44px -12px rgba(15, 23, 42, 0.22)'
+          : '0 10px 22px rgba(15, 23, 42, 0.1)',
         transform: hovered ? 'translateY(-4px)' : 'none',
         transition: 'box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease',
-        border: hovered ? '1px solid rgba(245, 179, 1, 0.5)' : '1px solid rgba(255, 255, 255, 0.16)',
+        border: hovered ? '1px solid rgba(109,40,217,0.4)' : '1px solid #ECEEF1',
         fontFamily: FONT,
         display: 'flex',
         flexDirection: 'column',
@@ -93,13 +91,6 @@ export default function CourseCard({
             transform: hovered ? 'scale(1.04)' : 'scale(1)',
           }}
         />
-        {/* Overlay sutil en hover */}
-        {hovered && (
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, transparent 50%, rgba(15, 76, 92, 0.1) 100%)',
-          }} />
-        )}
       </div>
 
       <div style={{ padding: '14px 16px', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -128,7 +119,7 @@ export default function CourseCard({
             fontSize: '15px',
             lineHeight: '1.4',
             fontWeight: 800,
-            color: '#FFFFFF',
+            color: '#1C1D1F',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
@@ -144,7 +135,7 @@ export default function CourseCard({
         <p style={{
           margin: 0,
           fontSize: '13px',
-          color: 'rgba(255,255,255,0.65)',
+          color: '#6A6F73',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -155,13 +146,13 @@ export default function CourseCard({
 
         {/* Rating */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <span style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF' }}>{rating}</span>
-          <span style={{ color: '#D4AF37', fontSize: '13px', letterSpacing: '1px' }}>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: '#1C1D1F' }}>{rating}</span>
+          <span style={{ color: '#7C3AED', fontSize: '13px', letterSpacing: '1px' }}>
             {Array.from({ length: 5 }, (_, i) => (
               i < Math.round(rating) ? '★' : '☆'
             )).join('')}
           </span>
-          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.55)' }}>({students})</span>
+          <span style={{ fontSize: '11px', color: '#6A6F73' }}>({students})</span>
         </div>
 
         {/* Precio + botones admin */}
@@ -171,9 +162,9 @@ export default function CourseCard({
               style={{ ...inputStyle, maxWidth: '110px' }} />
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '20px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>{price}</span>
+              <span style={{ fontSize: '20px', fontWeight: 800, color: '#1C1D1F', letterSpacing: '-0.02em' }}>{price}</span>
               {oldPrice && (
-                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', textDecoration: 'line-through' }}>{oldPrice}</span>
+                <span style={{ fontSize: '12px', color: '#9399A1', textDecoration: 'line-through' }}>{oldPrice}</span>
               )}
             </div>
           )}
@@ -185,14 +176,14 @@ export default function CourseCard({
                   <button onClick={saveEditing} style={{
                     fontSize: '12px', fontWeight: 700, color: '#fff',
                     background: gradients.btn,
-                    border: '1px solid rgba(255,255,255,0.3)', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(20, 5, 45, 0.3)',
+                    border: 'none', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(109,40,217,0.3)',
                   }}>
                     Guardar
                   </button>
                   <button onClick={() => setEditing(false)} style={{
-                    fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.85)',
-                    background: 'transparent', border: '1px solid rgba(255,255,255,0.35)',
+                    fontSize: '12px', fontWeight: 600, color: '#6A6F73',
+                    background: 'transparent', border: '1px solid #DEE3E8',
                     padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
                   }}>
                     Cancelar
@@ -201,8 +192,8 @@ export default function CourseCard({
               ) : (
                 <>
                   <button onClick={startEditing} style={{
-                    fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.85)',
-                    background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.35)',
+                    fontSize: '12px', fontWeight: 600, color: '#1C1D1F',
+                    background: '#F1F2F4', border: '1px solid #DEE3E8',
                     padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
                     transition: 'all 0.15s ease',
                   }}>
@@ -214,9 +205,9 @@ export default function CourseCard({
                       onMouseLeave={() => setDeleteHover(false)}
                       style={{
                         fontSize: '12px', fontWeight: 700,
-                        color: '#FCA5A5',
-                        background: deleteHover ? 'rgba(220,38,38,0.28)' : 'rgba(220,38,38,0.14)',
-                        border: '1px solid rgba(252,165,165,0.45)',
+                        color: '#DC2626',
+                        background: deleteHover ? 'rgba(220,38,38,0.12)' : 'rgba(220,38,38,0.06)',
+                        border: '1px solid rgba(220,38,38,0.35)',
                         padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
                         transition: 'all 0.15s ease',
                       }}>

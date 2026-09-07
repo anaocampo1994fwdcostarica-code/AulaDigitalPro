@@ -9,8 +9,8 @@ export const palette = {
   sky: '#0EA5E9',
   teal: '#0D9488',
   tealSoft: '#00A896',
-  gold: '#D4AF37',
-  goldBright: '#F5B301',
+  gold: '#7C3AED',
+  goldBright: '#0EA5E9',
   ink: '#0A2540',
   slate: '#475569',
   muted: '#64748B',
@@ -25,7 +25,7 @@ export const gradients = {
   app: 'linear-gradient(125deg, #4C1D95 0%, #7C3AED 24%, #4338CA 46%, #2563EB 70%, #0EA5E9 88%, #00A896 100%)',
   brand: 'linear-gradient(135deg, #6D28D9 0%, #3B82F6 55%, #0D9488 100%)',
   btn: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 60%, #0EA5E9 100%)',
-  gold: 'linear-gradient(135deg, #F5B301 0%, #D4AF37 100%)',
+  gold: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 50%, #0EA5E9 100%)',
 }
 
 // Superficies semitransparentes/oscuras para la identidad visual
