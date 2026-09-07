@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { FONT, palette, gradients } from '../theme'
 
 const demoUsers = [
@@ -87,6 +88,39 @@ export default function LoginForm({ onLogin }) {
           boxSizing: 'border-box',
         }}
       >
+        <Link
+          to="/"
+          style={{
+            position: 'absolute',
+            top: 22,
+            left: 40,
+            zIndex: 2,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            color: 'rgba(255,255,255,0.92)',
+            fontSize: 14,
+            fontWeight: 700,
+            textDecoration: 'none',
+            background: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.25)',
+            padding: '9px 16px',
+            borderRadius: 999,
+            fontFamily: FONT,
+            boxShadow: '0 6px 16px rgba(20, 5, 45, 0.2)',
+            transition: 'background 0.2s ease, transform 0.2s ease',
+          }}
+          onMouseEnter={(event) => {
+            event.currentTarget.style.background = 'rgba(255,255,255,0.24)'
+            event.currentTarget.style.transform = 'translateX(-2px)'
+          }}
+          onMouseLeave={(event) => {
+            event.currentTarget.style.background = 'rgba(255,255,255,0.1)'
+            event.currentTarget.style.transform = 'translateX(0)'
+          }}
+        >
+          ← Volver al inicio
+        </Link>
         {/* Panel de marca: logo grande + textos */}
         <div className="login-brand" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', animation: 'fadeInUp 0.6s ease both' }}>

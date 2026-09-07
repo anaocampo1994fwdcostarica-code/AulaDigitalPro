@@ -32,7 +32,7 @@ export default function Navbar({ user, onLogout }) {
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        background: 'rgba(12, 14, 38, 0.55)',
+        background: gradients.btn,
         borderBottom: '1px solid rgba(255,255,255,0.14)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',

@@ -95,7 +95,7 @@ const inputStyle = {
 
 function FilterSection({ title, children }) {
   return (
-    <section style={{ borderBottom: `1px solid #ECEEF1`, padding: '14px 0' }}>
+    <section style={{ borderBottom: `1px solid #DFE3F3`, padding: '14px 0' }}>
       <h3 style={{ fontSize: '11px', fontWeight: 800, color: textSecondary, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
         {title}
       </h3>
@@ -114,9 +114,16 @@ export default function Dashboard({ user, onLogout }) {
   const [newCategory, setNewCategory] = useState(filterCategories[0])
   const [newLevel, setNewLevel] = useState('Principiante')
   const [selectedCategories, setSelectedCategories] = useState([])
-  const [selectedRatings, setSelectedRatings] = useState([])
   const [selectedLevels, setSelectedLevels] = useState([])
+  const [selectedRatings, setSelectedRatings] = useState([])
   const [selectedPrices, setSelectedPrices] = useState([])
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [cart, setCart] = useState([])
+  const [showCartModal, setShowCartModal] = useState(false)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [cardNumber, setCardNumber] = useState('')
+  const [cardExpiry, setCardExpiry] = useState('')
+  const [cardCvv, setCardCvv] = useState('')
   const isAdmin = user?.role === 'admin'
 
   const searchTerm = (searchParams.get('search') || '').toLowerCase()
@@ -211,11 +218,13 @@ export default function Dashboard({ user, onLogout }) {
       setTitle('')
       setInstructor('')
       setError('')
+      setShowCreateModal(false)
     } catch {
       newCourse.id = Date.now()
       setCourses((prev) => [...prev, newCourse])
       setTitle('')
       setInstructor('')
+      setShowCreateModal(false)
     }
   }
 
@@ -244,6 +253,38 @@ export default function Dashboard({ user, onLogout }) {
         )
       )
     }
+  }
+
+  const parsePrice = (value) =>
+    value === 'Gratis' || !value ? 0 : Number(String(value).replace(/[^0-9]/g, ''))
+
+  const formatPrice = (value) =>
+    value === 0 ? 'Gratis' : Number(value).toLocaleString('es-CL')
+
+  const totalPrice = cart.reduce((acc, course) => acc + parsePrice(course.price), 0)
+
+  const handleAddToCart = (course) => {
+    setCart((prev) => (prev.some((c) => String(c.id) === String(course.id)) ? prev : [...prev, course]))
+  }
+
+  const handleRemoveFromCart = (id) => {
+    setCart((prev) => prev.filter((course) => String(course.id) !== String(id)))
+  }
+
+  const handlePayment = (event) => {
+    event.preventDefault()
+    if (!cardNumber.trim() || !cardExpiry.trim() || !cardCvv.trim()) {
+      setError('Completa todos los datos de tu tarjeta para continuar.')
+      return
+    }
+    alert('¡Pago Exitoso!')
+    setCart([])
+    setShowPaymentModal(false)
+    setShowCartModal(false)
+    setCardNumber('')
+    setCardExpiry('')
+    setCardCvv('')
+    setError('')
   }
 
   return (
@@ -289,61 +330,11 @@ export default function Dashboard({ user, onLogout }) {
       </div>
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 28px', position: 'relative', zIndex: 1, boxSizing: 'border-box' }}>
-        {error && (
-          <div style={{ background: 'rgba(220, 38, 38, 0.08)', border: '1px solid rgba(220, 38, 38, 0.3)', color: palette.danger, fontSize: '14px', fontWeight: 600, padding: '12px 16px', borderRadius: '12px', marginBottom: '20px' }}>
-            {error}
-          </div>
-        )}
-
-        {/* Panel admin: crear curso */}
-        {isAdmin && (
-          <div style={{ border: `1px solid ${borderColor}`, borderRadius: '18px', background: '#FFFFFF', boxShadow: '0 18px 44px rgba(20,5,45,0.08)', padding: '20px 24px', marginBottom: '28px' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 800, color: textPrimary, margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              Crear nuevo curso (Admin)
-            </h3>
-            <form onSubmit={handleCreate} style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-              <div style={{ flex: '2', minWidth: '200px' }}>
-                <label htmlFor="dash-title" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Titulo</label>
-                <input id="dash-title" type="text" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Titulo del curso" style={inputStyle} />
-              </div>
-              <div style={{ flex: '1', minWidth: '150px' }}>
-                <label htmlFor="dash-instructor" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Instructor</label>
-                <input id="dash-instructor" type="text" value={instructor} onChange={(event) => setInstructor(event.target.value)} placeholder="Nombre" style={inputStyle} />
-              </div>
-              <div style={{ flex: '1', minWidth: '170px' }}>
-                <label htmlFor="dash-category" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Categoria</label>
-                <select id="dash-category" value={newCategory} onChange={(event) => setNewCategory(event.target.value)} style={inputStyle}>
-                  {filterCategories.map((category) => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-              <div style={{ flex: '1', minWidth: '140px' }}>
-                <label htmlFor="dash-level" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Nivel</label>
-                <select id="dash-level" value={newLevel} onChange={(event) => setNewLevel(event.target.value)} style={inputStyle}>
-                  {levelOptions.filter((level) => level !== 'Todos los niveles').map((level) => (
-                    <option key={level} value={level}>{level}</option>
-                  ))}
-                </select>
-              </div>
-              <button type="submit" style={{
-                background: gradients.btn,
-                color: '#fff', fontSize: '14px', fontWeight: 800, border: '1px solid rgba(255,255,255,0.3)',
-                padding: '11px 22px', borderRadius: '999px', cursor: 'pointer',
-                boxShadow: '0 10px 22px rgba(109,40,217,0.25)',
-                transition: 'all 0.2s ease', whiteSpace: 'nowrap',
-              }}>
-                + Crear curso
-              </button>
-            </form>
-          </div>
-        )}
-
         {/* Layout sidebar + grid */}
         <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start' }}>
 
           {/* Sidebar filtros */}
-          <aside style={{ width: 248, minWidth: 248, background: '#FFFFFF', border: `1px solid ${borderColor}`, borderRadius: 20, padding: '18px 22px', boxShadow: '0 24px 60px rgba(20, 5, 45, 0.06)', fontFamily: FONT }}>
+          <aside style={{ width: 248, minWidth: 248, background: '#EEF2FF', border: '1px solid #DFE3F3', borderRadius: 20, padding: '18px 22px', boxShadow: '0 24px 60px rgba(20, 5, 45, 0.06)', fontFamily: FONT }}>
             <FilterSection title="Categorias">
               {filterCategories.map((category) => (
                 <label key={category} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 13, color: textPrimary, cursor: 'pointer', borderRadius: 6, fontFamily: FONT }}>
@@ -364,7 +355,7 @@ export default function Dashboard({ user, onLogout }) {
               {ratingOptions.map((option) => (
                 <label key={option.label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 13, color: textPrimary, cursor: 'pointer', fontFamily: FONT }}>
                   <input type="checkbox" checked={selectedRatings.includes(option.label)} onChange={() => toggleIn(option.label, selectedRatings, setSelectedRatings)} style={{ accentColor: palette.goldBright, width: 15, height: 15, flexShrink: 0 }} />
-                  <span style={{ color: palette.gold }}>★</span> {option.label}
+                  <span style={{ color: palette.purple }}>★</span> {option.label}
                 </label>
               ))}
             </FilterSection>
@@ -377,7 +368,7 @@ export default function Dashboard({ user, onLogout }) {
               ))}
             </FilterSection>
             {hasFilters && (
-              <button onClick={clearFilters} style={{ marginTop: 14, width: '100%', background: '#F1F2F4', color: textPrimary, border: `1px solid ${borderColor}`, padding: 9, fontSize: 13, fontWeight: 700, borderRadius: 10, cursor: 'pointer', fontFamily: FONT, transition: 'all 0.2s ease' }}>
+              <button onClick={clearFilters} style={{ marginTop: 14, width: '100%', background: '#6D28D9', color: '#FFFFFF', border: 'none', padding: 9, fontSize: 13, fontWeight: 700, borderRadius: 10, cursor: 'pointer', fontFamily: FONT, transition: 'all 0.2s ease' }}>
                 Borrar filtros
               </button>
             )}
@@ -414,6 +405,8 @@ export default function Dashboard({ user, onLogout }) {
                     isAdmin={isAdmin}
                     onDelete={isAdmin ? () => handleDelete(course.id) : undefined}
                     onUpdate={isAdmin ? (updates) => handleUpdate(course.id, updates) : undefined}
+                    onAddToCart={isAdmin ? undefined : () => handleAddToCart(course)}
+                    inCart={cart.some((c) => String(c.id) === String(course.id))}
                   />
                 ))}
               </div>
@@ -421,6 +414,491 @@ export default function Dashboard({ user, onLogout }) {
           </main>
         </div>
       </div>
+
+      {isAdmin && (
+        <>
+          {/* Boton flotante (+) para crear curso */}
+          <button
+            onClick={() => setShowCreateModal(true)}
+            aria-label="Crear nuevo curso"
+            style={{
+              position: 'fixed',
+              bottom: 28,
+              right: 28,
+              zIndex: 60,
+              width: 58,
+              height: 58,
+              borderRadius: '50%',
+              background: gradients.btn,
+              color: '#FFFFFF',
+              fontSize: 30,
+              fontWeight: 800,
+              lineHeight: 1,
+              border: '1px solid rgba(255,255,255,0.35)',
+              boxShadow: '0 14px 30px rgba(109,40,217,0.45)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: FONT,
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            }}
+            onMouseEnter={(event) => {
+              event.currentTarget.style.transform = 'scale(1.08)'
+              event.currentTarget.style.boxShadow = '0 18px 38px rgba(109,40,217,0.55)'
+            }}
+            onMouseLeave={(event) => {
+              event.currentTarget.style.transform = 'scale(1)'
+              event.currentTarget.style.boxShadow = '0 14px 30px rgba(109,40,217,0.45)'
+            }}
+          >
+            +
+          </button>
+
+          {/* Modal crear curso */}
+          {showCreateModal && (
+            <div
+              onClick={() => setShowCreateModal(false)}
+              style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 80,
+                background: 'rgba(10, 12, 32, 0.55)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '20px',
+                boxSizing: 'border-box',
+              }}
+            >
+              <div
+                onClick={(event) => event.stopPropagation()}
+                style={{
+                  width: '100%',
+                  maxWidth: 640,
+                  background: '#FFFFFF',
+                  borderRadius: '20px',
+                  borderTop: '4px solid #6D28D9',
+                  padding: '26px 28px',
+                  boxSizing: 'border-box',
+                  boxShadow: '0 30px 70px rgba(20, 5, 45, 0.4)',
+                  fontFamily: FONT,
+                  position: 'relative',
+                }}
+              >
+                <button
+                  onClick={() => setShowCreateModal(false)}
+                  aria-label="Cerrar"
+                  style={{
+                    position: 'absolute',
+                    top: 14,
+                    right: 16,
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: '#F1F2F4',
+                    color: '#475569',
+                    fontSize: 18,
+                    fontWeight: 800,
+                    lineHeight: 1,
+                    cursor: 'pointer',
+                    fontFamily: FONT,
+                  }}
+                >
+                  ×
+                </button>
+
+                <h3 style={{ fontSize: '20px', fontWeight: 900, color: textPrimary, margin: '0 0 18px', letterSpacing: '-0.02em' }}>
+                  Crear nuevo curso
+                </h3>
+
+                {error && (
+                  <div style={{ background: 'rgba(220, 38, 38, 0.08)', border: '1px solid rgba(220, 38, 38, 0.3)', color: palette.danger, fontSize: '14px', fontWeight: 600, padding: '12px 16px', borderRadius: '12px', marginBottom: '18px' }}>
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleCreate} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label htmlFor="modal-title" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Título</label>
+                    <input id="modal-title" type="text" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Título del curso" style={inputStyle} />
+                  </div>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label htmlFor="modal-instructor" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Instructor</label>
+                    <input id="modal-instructor" type="text" value={instructor} onChange={(event) => setInstructor(event.target.value)} placeholder="Nombre" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label htmlFor="modal-category" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Categoría</label>
+                    <select id="modal-category" value={newCategory} onChange={(event) => setNewCategory(event.target.value)} style={inputStyle}>
+                      {filterCategories.map((category) => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="modal-level" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Nivel</label>
+                    <select id="modal-level" value={newLevel} onChange={(event) => setNewLevel(event.target.value)} style={inputStyle}>
+                      {levelOptions.filter((level) => level !== 'Todos los niveles').map((level) => (
+                        <option key={level} value={level}>{level}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 6 }}>
+                    <button
+                      type="button"
+                      onClick={() => setShowCreateModal(false)}
+                      style={{
+                        fontSize: '14px', fontWeight: 700, color: '#475569',
+                        background: '#F1F2F4', border: 'none',
+                        padding: '11px 20px', borderRadius: '10px', cursor: 'pointer',
+                        fontFamily: FONT,
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      style={{
+                        background: gradients.btn,
+                        color: '#fff', fontSize: '14px', fontWeight: 800, border: '1px solid rgba(255,255,255,0.3)',
+                        padding: '11px 22px', borderRadius: '10px', cursor: 'pointer',
+                        boxShadow: '0 10px 22px rgba(109,40,217,0.25)',
+                        transition: 'all 0.2s ease', whiteSpace: 'nowrap',
+                        fontFamily: FONT,
+                      }}
+                    >
+                      + Crear curso
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {!isAdmin && (
+        <>
+          {/* Boton flotante del carrito */}
+          <button
+            onClick={() => setShowCartModal(true)}
+            aria-label="Ver carrito"
+            style={{
+              position: 'fixed',
+              bottom: 28,
+              right: 28,
+              zIndex: 60,
+              width: 58,
+              height: 58,
+              borderRadius: '50%',
+              background: gradients.btn,
+              color: '#FFFFFF',
+              fontSize: 22,
+              fontWeight: 800,
+              lineHeight: 1,
+              border: '1px solid rgba(255,255,255,0.35)',
+              boxShadow: '0 14px 30px rgba(109,40,217,0.45)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: FONT,
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            }}
+            onMouseEnter={(event) => {
+              event.currentTarget.style.transform = 'scale(1.08)'
+              event.currentTarget.style.boxShadow = '0 18px 38px rgba(109,40,217,0.55)'
+            }}
+            onMouseLeave={(event) => {
+              event.currentTarget.style.transform = 'scale(1)'
+              event.currentTarget.style.boxShadow = '0 14px 30px rgba(109,40,217,0.45)'
+            }}
+          >
+            🛒
+            {cart.length > 0 && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: -4,
+                  right: -4,
+                  minWidth: 22,
+                  height: 22,
+                  borderRadius: '50%',
+                  background: '#EF4444',
+                  color: '#FFFFFF',
+                  fontSize: 12,
+                  fontWeight: 800,
+                  lineHeight: '22px',
+                  textAlign: 'center',
+                  padding: '0 5px',
+                  boxSizing: 'border-box',
+                  border: '2px solid #FFFFFF',
+                }}
+              >
+                {cart.length}
+              </span>
+            )}
+          </button>
+
+          {/* Modal del carrito */}
+          {showCartModal && (
+            <div
+              onClick={() => setShowCartModal(false)}
+              style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 80,
+                background: 'rgba(10, 12, 32, 0.55)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '20px',
+                boxSizing: 'border-box',
+              }}
+            >
+              <div
+                onClick={(event) => event.stopPropagation()}
+                style={{
+                  width: '100%',
+                  maxWidth: 560,
+                  background: '#FFFFFF',
+                  borderRadius: '20px',
+                  borderTop: '4px solid #6D28D9',
+                  padding: '26px 28px',
+                  boxSizing: 'border-box',
+                  boxShadow: '0 30px 70px rgba(20, 5, 45, 0.4)',
+                  fontFamily: FONT,
+                  position: 'relative',
+                }}
+              >
+                <button
+                  onClick={() => setShowCartModal(false)}
+                  aria-label="Cerrar"
+                  style={{
+                    position: 'absolute',
+                    top: 14,
+                    right: 16,
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: '#F1F2F4',
+                    color: '#475569',
+                    fontSize: 18,
+                    fontWeight: 800,
+                    lineHeight: 1,
+                    cursor: 'pointer',
+                    fontFamily: FONT,
+                  }}
+                >
+                  ×
+                </button>
+
+                <h3 style={{ fontSize: '20px', fontWeight: 900, color: textPrimary, margin: '0 0 4px', letterSpacing: '-0.02em' }}>
+                  Tu Carrito
+                </h3>
+                <p style={{ fontSize: 14, color: textSecondary, margin: '0 0 18px' }}>
+                  {cart.length === 0 ? 'Aún no has agregado cursos.' : `${cart.length} ${cart.length === 1 ? 'curso' : 'cursos'} seleccionados`}
+                </p>
+
+                {cart.length === 0 ? (
+                  <div style={{ background: '#F7F8FA', border: '1.5px dashed #D4D9DE', borderRadius: 14, padding: '30px 20px', textAlign: 'center', color: textSecondary, fontSize: 14, fontWeight: 600 }}>
+                    Agrega cursos con el botón "Agregar al Carrito" en las tarjetas.
+                  </div>
+                ) : (
+                  <div style={{ maxHeight: 300, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 10, marginBottom: '20px' }}>
+                    {cart.map((course) => (
+                      <div key={course.id} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#F7F8FA', border: '1px solid #ECEEF1', borderRadius: 12, padding: '10px 12px' }}>
+                        <img src={course.image} alt={course.title} style={{ width: 64, height: 42, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ fontSize: 13.5, fontWeight: 700, color: textPrimary, margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{course.title}</p>
+                          <span style={{ fontSize: 13, fontWeight: 800, color: '#6D28D9' }}>{course.price}</span>
+                        </div>
+                        <button
+                          onClick={() => handleRemoveFromCart(course.id)}
+                          style={{
+                            fontSize: 12, fontWeight: 700, color: '#DC2626',
+                            background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.3)',
+                            padding: '6px 10px', borderRadius: 8, cursor: 'pointer', fontFamily: FONT,
+                          }}
+                        >
+                          Quitar
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: textSecondary }}>Total a Pagar</span>
+                  <span style={{ fontSize: 22, fontWeight: 900, color: '#6D28D9', letterSpacing: '-0.02em' }}>{formatPrice(totalPrice)}</span>
+                </div>
+
+                <button
+                  onClick={() => setShowPaymentModal(true)}
+                  disabled={cart.length === 0}
+                  style={{
+                    width: '100%',
+                    background: cart.length === 0 ? '#C7CBD4' : gradients.btn,
+                    color: '#fff', fontSize: 15, fontWeight: 800, border: '1px solid rgba(255,255,255,0.3)',
+                    padding: '13px 18px', borderRadius: '12px', cursor: cart.length === 0 ? 'not-allowed' : 'pointer',
+                    boxShadow: cart.length === 0 ? 'none' : '0 10px 22px rgba(109,40,217,0.25)',
+                    fontFamily: FONT,
+                  }}
+                >
+                  Pagar
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Modal de pago simulado */}
+          {showPaymentModal && (
+            <div
+              onClick={() => setShowPaymentModal(false)}
+              style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 90,
+                background: 'rgba(10, 12, 32, 0.6)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '20px',
+                boxSizing: 'border-box',
+              }}
+            >
+              <div
+                onClick={(event) => event.stopPropagation()}
+                style={{
+                  width: '100%',
+                  maxWidth: 460,
+                  background: '#FFFFFF',
+                  borderRadius: '20px',
+                  borderTop: '4px solid #0D9488',
+                  padding: '26px 28px',
+                  boxSizing: 'border-box',
+                  boxShadow: '0 30px 70px rgba(20, 5, 45, 0.4)',
+                  fontFamily: FONT,
+                  position: 'relative',
+                }}
+              >
+                <button
+                  onClick={() => setShowPaymentModal(false)}
+                  aria-label="Cerrar"
+                  style={{
+                    position: 'absolute',
+                    top: 14,
+                    right: 16,
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: '#F1F2F4',
+                    color: '#475569',
+                    fontSize: 18,
+                    fontWeight: 800,
+                    lineHeight: 1,
+                    cursor: 'pointer',
+                    fontFamily: FONT,
+                  }}
+                >
+                  ×
+                </button>
+
+                <h3 style={{ fontSize: '20px', fontWeight: 900, color: textPrimary, margin: '0 0 4px', letterSpacing: '-0.02em' }}>
+                  Pago Simulado
+                </h3>
+                <p style={{ fontSize: 14, color: textSecondary, margin: '0 0 18px' }}>
+                  Total a pagar: <strong style={{ color: '#6D28D9' }}>{formatPrice(totalPrice)}</strong>
+                </p>
+
+                {error && (
+                  <div style={{ background: 'rgba(220, 38, 38, 0.08)', border: '1px solid rgba(220, 38, 38, 0.3)', color: palette.danger, fontSize: '14px', fontWeight: 600, padding: '12px 16px', borderRadius: '12px', marginBottom: '18px' }}>
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handlePayment} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div>
+                    <label htmlFor="pay-number" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Número de Tarjeta</label>
+                    <input
+                      id="pay-number"
+                      type="text"
+                      inputMode="numeric"
+                      value={cardNumber}
+                      onChange={(event) => setCardNumber(event.target.value)}
+                      placeholder="1234 5678 9012 3456"
+                      maxLength={19}
+                      style={inputStyle}
+                    />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    <div>
+                      <label htmlFor="pay-expiry" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>Fecha Expiración</label>
+                      <input
+                        id="pay-expiry"
+                        type="text"
+                        value={cardExpiry}
+                        onChange={(event) => setCardExpiry(event.target.value)}
+                        placeholder="MM/AA"
+                        maxLength={5}
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="pay-cvv" style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px', color: textSecondary }}>CVV</label>
+                      <input
+                        id="pay-cvv"
+                        type="password"
+                        inputMode="numeric"
+                        value={cardCvv}
+                        onChange={(event) => setCardCvv(event.target.value)}
+                        placeholder="123"
+                        maxLength={4}
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 6 }}>
+                    <button
+                      type="button"
+                      onClick={() => setShowPaymentModal(false)}
+                      style={{
+                        fontSize: '14px', fontWeight: 700, color: '#475569',
+                        background: '#F1F2F4', border: 'none',
+                        padding: '11px 20px', borderRadius: '10px', cursor: 'pointer',
+                        fontFamily: FONT,
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      style={{
+                        background: '#0D9488',
+                        color: '#fff', fontSize: '14px', fontWeight: 800, border: 'none',
+                        padding: '11px 22px', borderRadius: '10px', cursor: 'pointer',
+                        boxShadow: '0 10px 22px rgba(13,148,136,0.25)',
+                        fontFamily: FONT,
+                      }}
+                    >
+                      Confirmar Pago
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }

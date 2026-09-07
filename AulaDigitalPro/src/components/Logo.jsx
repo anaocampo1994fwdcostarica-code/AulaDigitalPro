@@ -1,12 +1,12 @@
 import { GraduationCap } from 'lucide-react'
 
-export default function Logo({ size = 48, fontSize = 22 }) {
+export default function Logo({ size = 40, fontSize = 32 }) {
   return (
     <div
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 12,
+        gap: 14,
         width: 'fit-content',
       }}
     >
@@ -20,7 +20,7 @@ export default function Logo({ size = 48, fontSize = 22 }) {
           height: size,
           borderRadius: 14,
           background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 60%, #0EA5E9 100%)',
-          boxShadow: '0 10px 22px rgba(109, 40, 217, 0.4)',
+          boxShadow: '0 10px 22px rgba(109, 40, 217, 0.45)',
           flexShrink: 0,
         }}
       >

@@ -19,10 +19,13 @@ function getLevelStyle(level) {
   if (level === 'Principiante') {
     return { background: 'rgba(0, 168, 150, 0.1)', color: '#0D9488' }
   }
-  if (level === 'Avanzado') {
-    return { background: 'rgba(212, 175, 55, 0.14)', color: '#A07E08' }
+  if (level === 'Intermedio') {
+    return { background: 'rgba(37, 99, 235, 0.12)', color: '#2563EB' }
   }
-  return { background: 'rgba(37, 99, 235, 0.12)', color: '#2563EB' }
+  if (level === 'Avanzado') {
+    return { background: 'rgba(124, 58, 237, 0.12)', color: '#7C3AED' }
+  }
+  return { background: 'rgba(99, 102, 241, 0.12)', color: '#6366F1' }
 }
 
 export default function CourseCard({
@@ -37,6 +40,8 @@ export default function CourseCard({
   isAdmin = false,
   onDelete,
   onUpdate,
+  onAddToCart,
+  inCart = false,
 }) {
   const [hovered, setHovered] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -64,14 +69,15 @@ export default function CourseCard({
       onMouseLeave={() => setHovered(false)}
       style={{
         background: '#FFFFFF',
-        borderRadius: '18px',
+        borderRadius: '0.5rem',
         overflow: 'hidden',
         boxShadow: hovered
-          ? '0 26px 44px -12px rgba(15, 23, 42, 0.22)'
-          : '0 10px 22px rgba(15, 23, 42, 0.1)',
+          ? '0 16px 30px -8px rgba(15, 23, 42, 0.22)'
+          : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
         transform: hovered ? 'translateY(-4px)' : 'none',
         transition: 'box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease',
         border: hovered ? '1px solid rgba(109,40,217,0.4)' : '1px solid #ECEEF1',
+        borderTop: '4px solid #4F46E5',
         fontFamily: FONT,
         display: 'flex',
         flexDirection: 'column',
@@ -93,7 +99,7 @@ export default function CourseCard({
         />
       </div>
 
-      <div style={{ padding: '14px 16px', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <div style={{ padding: '16px 16px 26px', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
         {/* Badge nivel */}
         <span style={{
           display: 'inline-block',
@@ -156,12 +162,12 @@ export default function CourseCard({
         </div>
 
         {/* Precio + botones admin */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', marginTop: 'auto', paddingTop: '6px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '10px', marginTop: 'auto', paddingTop: '10px' }}>
           {editing ? (
             <input type="text" value={editPrice} onChange={(event) => setEditPrice(event.target.value)}
               style={{ ...inputStyle, maxWidth: '110px' }} />
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', minWidth: 0, flexShrink: 1 }}>
               <span style={{ fontSize: '20px', fontWeight: 800, color: '#1C1D1F', letterSpacing: '-0.02em' }}>{price}</span>
               {oldPrice && (
                 <span style={{ fontSize: '12px', color: '#9399A1', textDecoration: 'line-through' }}>{oldPrice}</span>
@@ -170,7 +176,7 @@ export default function CourseCard({
           )}
 
           {isAdmin && (
-            <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: '8px', flexShrink: 1, minWidth: 0 }}>
               {editing ? (
                 <>
                   <button onClick={saveEditing} style={{
@@ -192,11 +198,20 @@ export default function CourseCard({
               ) : (
                 <>
                   <button onClick={startEditing} style={{
-                    fontSize: '12px', fontWeight: 600, color: '#1C1D1F',
-                    background: '#F1F2F4', border: '1px solid #DEE3E8',
-                    padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                  }}>
+                    fontSize: '12px', fontWeight: 700, color: '#FFFFFF',
+                    background: '#4F46E5', border: 'none',
+                    padding: '8px 14px', borderRadius: '8px', cursor: 'pointer',
+                    boxShadow: '0 4px 10px rgba(79,70,229,0.3)',
+                    transition: 'background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease',
+                  }}
+                    onMouseEnter={(event) => {
+                      event.currentTarget.style.background = '#4338CA'
+                      event.currentTarget.style.transform = 'translateY(-1px)'
+                    }}
+                    onMouseLeave={(event) => {
+                      event.currentTarget.style.background = '#4F46E5'
+                      event.currentTarget.style.transform = 'translateY(0)'
+                    }}>
                     Editar
                   </button>
                   {onDelete && (
@@ -205,11 +220,12 @@ export default function CourseCard({
                       onMouseLeave={() => setDeleteHover(false)}
                       style={{
                         fontSize: '12px', fontWeight: 700,
-                        color: '#DC2626',
-                        background: deleteHover ? 'rgba(220,38,38,0.12)' : 'rgba(220,38,38,0.06)',
-                        border: '1px solid rgba(220,38,38,0.35)',
-                        padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
-                        transition: 'all 0.15s ease',
+                        color: '#FFFFFF',
+                        background: deleteHover ? '#DC2626' : '#ef4444',
+                        border: 'none',
+                        padding: '8px 14px', borderRadius: '8px', cursor: 'pointer',
+boxShadow: deleteHover ? '0 6px 14px rgba(239,68,68,0.4)' : '0 4px 10px rgba(239,68,68,0.3)',
+                        transition: 'background 0.15s ease, boxShadow 0.15s ease, transform 0.15s ease',
                       }}>
                       Eliminar
                     </button>
@@ -217,6 +233,37 @@ export default function CourseCard({
                 </>
               )}
             </div>
+          )}
+
+          {!isAdmin && onAddToCart && (
+            <button
+              onClick={onAddToCart}
+              disabled={inCart}
+              style={{
+                fontSize: '12.5px', fontWeight: 800, color: inCart ? '#0D9488' : '#FFFFFF',
+                background: inCart ? 'rgba(13,148,136,0.12)' : gradients.btn,
+                border: inCart ? '1px solid rgba(13,148,136,0.4)' : 'none',
+                padding: '9px 14px', borderRadius: '8px', cursor: inCart ? 'default' : 'pointer',
+                boxShadow: inCart ? 'none' : '0 6px 14px rgba(109,40,217,0.3)',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+                transition: 'all 0.15s ease, transform 0.15s ease',
+              }}
+              onMouseEnter={(event) => {
+                if (!inCart) {
+                  event.currentTarget.style.transform = 'translateY(-1px)'
+                  event.currentTarget.style.boxShadow = '0 8px 18px rgba(109,40,217,0.4)'
+                }
+              }}
+              onMouseLeave={(event) => {
+                if (!inCart) {
+                  event.currentTarget.style.transform = 'translateY(0)'
+                  event.currentTarget.style.boxShadow = '0 6px 14px rgba(109,40,217,0.3)'
+                }
+              }}
+            >
+              {inCart ? '✓ En el carrito' : 'Agregar al Carrito'}
+            </button>
           )}
         </div>
       </div>
