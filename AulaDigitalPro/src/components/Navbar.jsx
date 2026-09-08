@@ -23,7 +23,6 @@ export default function Navbar({ user, onLogout }) {
 
   const handleLogout = () => {
     onLogout()
-    navigate('/login')
   }
 
   return (

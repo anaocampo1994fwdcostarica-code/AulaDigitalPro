@@ -1,9 +1,9 @@
 import { Navigate, Link } from 'react-router-dom'
 import { FONT, gradients } from '../theme'
 
-export default function AdminRoute({ children, user }) {
+export default function AdminRoute({ children, user, goToLogin }) {
   if (!user) {
-    return <Navigate to="/" replace />
+    return <Navigate to={goToLogin ? '/login' : '/'} replace />
   }
 
   if (user.role !== 'admin') {
